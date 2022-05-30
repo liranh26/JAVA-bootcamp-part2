@@ -28,10 +28,12 @@ public class CourseDB {
 	}
 
 	private void seed() {
-		List<Course> courseList = Arrays.asList(new Course(101, "JAVA"), new Course(102, "Calculus"),
-				new Course(103, "Pyshics"));
+		List<Course> courseList = Arrays.asList(
+				new Course("JAVA"), 
+				new Course("Calculus"),
+				new Course("Pyshics"));
 
-		courses = courseList.stream().collect(Collectors.toMap(Course::getNumber, Function.identity()));
+		courses = courseList.stream().collect(Collectors.toMap(Course::getCourseNumber, Function.identity()));
 	}
 
 	public Map<Long, Course> getCourses() {

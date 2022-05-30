@@ -4,26 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Course {
-	private long number;
+	private static Long counter = 100l;
+	private Long courseNumber;
 	private String name;
 	private List<Student> courseStudents;
 	
 	public Course() {
+		setCourseNumber(counter++);
 		courseStudents = new ArrayList<Student>();
 	}
 	
-	public Course(long number, String name) {
+	public Course(String name) {
 		courseStudents = new ArrayList<Student>();
-		setNumber(number);
+		setCourseNumber(counter++);
 		setName(name);
 	}
 
-	public long getNumber() {
-		return number;
+	public long getCourseNumber() {
+		return courseNumber;
 	}
 
-	public void setNumber(long number) {
-		this.number = number;
+	public void setCourseNumber(long number) {
+		this.courseNumber = number;
 	}
 
 	public String getName() {
@@ -41,7 +43,7 @@ public class Course {
 
 	@Override
 	public String toString() {
-		return "Course [number=" + number + ", name=" + name + ", courseStudents=" + courseStudents + "]";
+		return "Course [number=" + courseNumber + ", name=" + name + ", courseStudents=" + courseStudents + "]";
 	}
 	
 }

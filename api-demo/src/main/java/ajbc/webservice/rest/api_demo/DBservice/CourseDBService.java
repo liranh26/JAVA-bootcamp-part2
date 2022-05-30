@@ -23,17 +23,27 @@ public class CourseDBService {
 		return new ArrayList<Course>(courses.values());
 	}
 
-	public Course getCourseByNumber(int courseNum) {
-		for (Course course : courses) {
-			if (course.getNumber() == courseNum)
-				return course;
-		}
-		return null;
+	public Course getCourseByNumber(long courseNum) {
+		return courses.get(courseNum);
 	}
 
-	public List<Course> addCourse(Course course) {
-		courses.add(course);
-		return courses;
+	public Course addCourse(Course course) {
+		if(course == null)
+			return null;
+		courses.put(course.getCourseNumber(), course);
+		return course;
+	}
+	
+	public Course updateCourse(Course course, long courseNumber) {
+		if(!courses.containsKey(courseNumber))
+			return null;
+		course.setCourseNumber(courseNumber);
+		courses.put(courseNumber, course);
+		return course;
+	}
+	
+	public Course reomveCourse(long courseNum) {
+		return courses.remove(courseNum);
 	}
 
 }
