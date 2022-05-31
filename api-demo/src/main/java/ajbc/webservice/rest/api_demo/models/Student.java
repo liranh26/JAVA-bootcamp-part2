@@ -6,19 +6,20 @@ import java.util.List;
 //class must have an empty constructor and getters and setters (javaBean)
 
 public class Student {
+
 	private final Long ID;
 	private String firstName;
 	private String lastName;
 	private double average;
 	private static long counter = 1000;
-	private List<Course> courses;
+	private List<Long> courses;
 	
 // NOTE - every class need a empty constructor -> the system first creates a model from
 // the empty and generates the other via setters
 	
 	public Student() {
 		this.ID = generateId();
-		courses = new ArrayList<Course>();
+		courses = new ArrayList<Long>();
 	}
 
 	private synchronized long generateId() {
@@ -30,7 +31,7 @@ public class Student {
 		setFirstName(firstName);
 		setLastName(lastName);
 		setAverage(average);
-		courses = new ArrayList<Course>();
+		courses = new ArrayList<Long>();
 	}
 
 	public String getFirstName() {
@@ -61,9 +62,13 @@ public class Student {
 		return ID;
 	}
 	
-	public Course addCourse(Course course) {
-		courses.add(course);
-		return course;
+	public Long addCourse(Long courseNum) {
+		courses.add(courseNum);
+		return courseNum;
+	}
+
+	public List<Long> getCourses() {
+		return courses;
 	}
 
 	@Override

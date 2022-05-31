@@ -3,7 +3,8 @@ package ajbc.webservice.rest.api_demo.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Course {
+public class Course{
+
 	private static Long counter = 100l;
 	private Long courseNumber;
 	private String name;
@@ -34,13 +35,17 @@ public class Course {
 
 	public void setName(String name) {
 		this.name = name;
-	}
+	}	
 	
+	public List<Student> getCourseStudents() {
+		return courseStudents;
+	}
+
 	public Student addStudent(Student student) {
 		courseStudents.add(student);
 		return student;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Course [number=" + courseNumber + ", name=" + name + ", courseStudents=" + courseStudents + "]";
