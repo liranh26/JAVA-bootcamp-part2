@@ -12,14 +12,14 @@ public class Student {
 	private String lastName;
 	private double average;
 	private static long counter = 1000;
-	private List<Long> courses;
+	private List<Course> courses;
 	
 // NOTE - every class need a empty constructor -> the system first creates a model from
 // the empty and generates the other via setters
 	
 	public Student() {
 		this.ID = generateId();
-		courses = new ArrayList<Long>();
+		courses = new ArrayList<Course>();
 	}
 
 	private synchronized long generateId() {
@@ -31,7 +31,7 @@ public class Student {
 		setFirstName(firstName);
 		setLastName(lastName);
 		setAverage(average);
-		courses = new ArrayList<Long>();
+		courses = new ArrayList<Course>();
 	}
 
 	public String getFirstName() {
@@ -61,13 +61,22 @@ public class Student {
 	public long getID() {
 		return ID;
 	}
-	
-	public Long addCourse(Long courseNum) {
+
+	public Course addCourse(Course courseNum) {
 		courses.add(courseNum);
 		return courseNum;
 	}
+	
+//	public Long addCourse(Long courseNum) {
+//		courses.add(courseNum);
+//		return courseNum;
+//	}
 
-	public List<Long> getCourses() {
+//	public List<Long> getCourses() {
+//		return courses;
+//	}
+	
+	public List<Course> getCourses() {
 		return courses;
 	}
 

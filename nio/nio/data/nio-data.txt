@@ -1,0 +1,4 @@
+Player name=asdasd, email=pppp, phone=12345
+Your points: 980, Your misses: 2, Your hits: 0.
+2 2 m
+4 6 m

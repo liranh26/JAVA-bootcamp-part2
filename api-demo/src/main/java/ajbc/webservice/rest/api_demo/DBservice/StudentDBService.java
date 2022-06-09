@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import ajbc.webservice.rest.api_demo.DB.MyDB;
+import ajbc.webservice.rest.api_demo.models.Course;
 import ajbc.webservice.rest.api_demo.models.Student;
 
 public class StudentDBService {
@@ -64,5 +65,8 @@ public class StudentDBService {
 		return students.values().stream().filter(s-> s.getAverage() >= minAverage && s.getAverage()<=maxAverage).toList();
 	}
 	
-	
+	//get courses of student
+	public List<Course> getCoursesByStudentId(long id){
+		return students.get(id).getCourses();
+	}
 }

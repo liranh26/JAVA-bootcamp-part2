@@ -104,4 +104,11 @@ public class StudentResource {
 		return studentDB.deleteStudent(id);
 	}
 
+	//link to another resource
+	@Path("/{id}/courses")
+	public StudentCourseResource getCourseResource() {
+		return new StudentCourseResource();
+	}
+	
+	
 }
