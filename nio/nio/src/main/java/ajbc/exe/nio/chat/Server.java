@@ -6,29 +6,34 @@ import java.nio.channels.*;
 import java.io.IOException;
 import java.util.*;
 
-public class Server implements Runnable {
+public class Server {
 	private final int port;
 	private ServerSocketChannel ssc;
 	private Selector selector;
 	private ByteBuffer buf = ByteBuffer.allocate(256);
 
+	private ArrayList<SocketChannel> sockets;
+	
 	Server(int port) throws IOException {
 		this.port = port;
 		this.ssc = ServerSocketChannel.open();
 		this.ssc.socket().bind(new InetSocketAddress(port));
 		this.ssc.configureBlocking(false);
 		this.selector = Selector.open();
+		
+		sockets = new ArrayList<SocketChannel>();
 
 		this.ssc.register(selector, SelectionKey.OP_ACCEPT);
 	}
 
-	@Override
+
 	public void run() {
 		try {
 			System.out.println("Server starting on port " + this.port);
 
 			Iterator<SelectionKey> iter;
 			SelectionKey key;
+			
 			while (this.ssc.isOpen()) {
 				selector.select();
 				
@@ -37,7 +42,7 @@ public class Server implements Runnable {
 					key = iter.next();
 					iter.remove();
 
-					if (key.isAcceptable())
+					if (key.isAcceptable()) 
 						this.handleAccept(key);
 					if (key.isReadable())
 						this.handleRead(key);
@@ -61,6 +66,7 @@ public class Server implements Runnable {
 		sc.write(welcome);
 		welcome.rewind();
 		System.out.println("accepted connection from: " + address);
+		sockets.add(sc);
 	}
 
 	private void handleRead(SelectionKey key) throws IOException {
@@ -92,19 +98,25 @@ public class Server implements Runnable {
 
 	private void broadcast(String msg) throws IOException {
 		ByteBuffer msgBuf = ByteBuffer.wrap(msg.getBytes());
-		for (SelectionKey key : selector.keys()) {
-			if (key.isValid() && key.channel() instanceof SocketChannel) {
-				SocketChannel sch = (SocketChannel) key.channel();
-				sch.write(msgBuf);
-				msgBuf.rewind();
-			}
+		for (SocketChannel socketChannel : sockets) {
+			socketChannel.write(msgBuf);
+			msgBuf.rewind();
 		}
+//		for (SelectionKey key : selector.keys()) {
+//			if (key.isValid() && key.channel() instanceof SocketChannel) {
+//				SocketChannel sch = (SocketChannel) key.channel();
+//				sch.write(msgBuf);
+//				msgBuf.rewind();
+//			}
+//		}
+		
+		
 	}
 
 	public static void main(String[] args) throws IOException {
 		
 		Server server = new Server(9090);
-		(new Thread(server)).start();
+		server.run();
 		
 	}
 }
