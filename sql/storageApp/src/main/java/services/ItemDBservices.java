@@ -72,7 +72,7 @@ public class ItemDBservices {
 	}
 
 	public void addItem(Connection connection, Item item) {
-
+		
 		try (Statement statment = connection.createStatement()) {
 
 			String query = "INSERT into Item (name, unitPrice, purchaseDate, quantity)" + "values('%s', %f, '%s', %d);"
@@ -218,7 +218,7 @@ public class ItemDBservices {
 
 					preparedStatment.addBatch();
 					idsUpdated.add("%s".formatted(item.getItemId()));
-				}else {
+				}else { // Forced error - only to present error handling 
 					addFakeItemToStatment(preparedStatment);
 				}
 			}
@@ -232,7 +232,7 @@ public class ItemDBservices {
 			}
 
 		} catch (SQLException e) {
-			System.err.println("Rolling back" + e.getMessage());
+			System.err.println("Rolling back - " + e.getMessage());
 			rollBackCon(connection);
 			idsUpdated.removeAll(idsUpdated);
 		}

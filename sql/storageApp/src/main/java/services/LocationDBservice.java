@@ -13,8 +13,10 @@ import models.Location;
 public class LocationDBservice {
 
 	public void addLocation(Connection connection, Location location) {
-
+		
 		try (Statement statment = connection.createStatement()) {
+			if(isAccessCodeExist(location, connection))
+				throw new SQLException("Location already exists in DB!"); //in real throw here custom exception
 
 			String query = "INSERT into Location (name, accessCode)"
 					+ "values('%s', '%s');".formatted(location.getName(), location.getAccessCode());
@@ -22,17 +24,20 @@ public class LocationDBservice {
 			System.out.println("Success ! " + rowsAffected + " rows affected");
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
 
-	public Location getLocation(Connection connection, String locationId) {
+	public Location getLocation(Connection connection, String locationId){
 
 		Location location = null;
 		String query = "select * from Location where locationId = " + locationId;
-
+		
 		try (Statement statment = connection.createStatement(); ResultSet resultSet = statment.executeQuery(query);) {
 
+			if(!isLocationExist(connection, locationId))
+				throw new SQLException("Location doesnt exists in DB!"); //in real throw here custom exception
+			
 			if (resultSet.next()) {
 
 				location = new Location();
@@ -42,12 +47,14 @@ public class LocationDBservice {
 			}
 
 		} catch (SQLException e) {
+			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
 		return location;
 	}
 
 	public Location updateLocation(Connection connection, Location location) {
+		
 		Location loc = getLocation(connection, "%d".formatted(location.getLocationId()));
 		if (loc == null) {
 			System.err.println("The Item does not exist in the DB!");
@@ -163,6 +170,81 @@ public class LocationDBservice {
 		return lastLocations;
 	}
 
+	
+	public List<Location> updateListOfLocations(Connection connection, List<Location> locations) {
+
+		setConnectionCommitFalse(connection);
+
+		List<String> idsUpdated = new ArrayList<>();
+		String query = "UPDATE Location " + "set name=? , accessCode= ? \n where locationid = ?";
+
+		try (PreparedStatement preparedStatment = connection.prepareStatement(query)) {
+
+			for (Location location : locations) {
+				if (location != null) {
+					preparedStatment.setString(1, location.getName());
+					preparedStatment.setString(2, location.getAccessCode());
+					preparedStatment.setInt(3, location.getLocationId());
+
+					preparedStatment.addBatch();
+					idsUpdated.add("%s".formatted(location.getLocationId()));
+				}else { // Forced error - only to present error handling 
+					addFakeLocationToStatment(preparedStatment);
+				}
+			}
+
+			int[] rowsAffected = preparedStatment.executeBatch();
+
+			for (int i : rowsAffected) {
+				if (i == 0)
+					throw new SQLException("something went wrong!");
+				System.out.println("Success ! " + i + " rows affected");
+			}
+
+		} catch (SQLException e) {
+			System.err.println("Rolling back - " + e.getMessage());
+			rollBackCon(connection);
+			idsUpdated.removeAll(idsUpdated);
+		}
+
+		setConnectionCommitTrue(connection);
+
+		return getListLocationsByIds(connection, idsUpdated);
+	}
+	
+	
+	public List<Location> getListLocationsByIds(Connection connection, List<String> ids) {
+
+		List<Location> items = new ArrayList<Location>();
+		try (Statement statement = connection.createStatement()) {
+
+			for (String id : ids) {
+				if (checkLocationExistById(connection, id))
+					items.add(getLocation(connection, id));
+				else
+					items.add(null); // only to see the error msg & rollback
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return items;
+	}
+	
+	
+	private void addFakeLocationToStatment(PreparedStatement preparedStatment) {
+		try {
+			preparedStatment.setString(1, "lala");
+			preparedStatment.setString(2, "abc");
+			preparedStatment.setString(3, "-1");
+			preparedStatment.addBatch();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private void setConnectionCommitFalse(Connection connection) {
 		try {
 			connection.setAutoCommit(false);
@@ -172,6 +254,39 @@ public class LocationDBservice {
 		}
 	}
 
+	
+	
+	public boolean isAccessCodeExist(Location location, Connection connection) {
+
+		String query = "select * from Location where accessCode = '%s'".formatted(location.getAccessCode());
+		
+		boolean exist = false;
+		
+		try (Statement statment = connection.createStatement(); 
+				ResultSet resultSet = statment.executeQuery(query);) {
+			exist = resultSet.next() ;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return exist;
+	}
+	
+	public boolean isLocationExist(Connection connection, String locationId) {
+
+		String query = "select * from Location where locationId = '" + locationId +"'";
+		
+		boolean exist = false;
+		
+		try (Statement statment = connection.createStatement(); 
+				ResultSet resultSet = statment.executeQuery(query);) {
+			exist = resultSet.next() ;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return exist;
+	}
+	
+	
 	private void setConnectionCommitTrue(Connection connection) {
 		try {
 			connection.setAutoCommit(true);
@@ -189,4 +304,9 @@ public class LocationDBservice {
 			e.printStackTrace();
 		}
 	}
+
+	private boolean checkLocationExistById(Connection connection, String id) {
+		return getLocation(connection, id) != null;
+	}
+	
 }

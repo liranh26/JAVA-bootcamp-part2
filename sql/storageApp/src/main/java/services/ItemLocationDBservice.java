@@ -74,17 +74,17 @@ public class ItemLocationDBservice {
 		return itemLocation;
 	}
 
-	public ItemLocation updateItemLocationByLocation(Connection connection, ItemLocation itemLocation, String locationId) {
+	public ItemLocation updateItemLocation(Connection connection, ItemLocation itemLocation, String newLocation) {
 		
-		Location loc = locationService.getLocation(connection, locationId);
+		Location loc = locationService.getLocation(connection, newLocation);
 		
 		if(loc != null) {
 			
 			try (Statement statment = connection.createStatement()){
 			
 				String query = "UPDATE ItemLocation " +
-				"set itemId=%d, locationId= %d".formatted(itemLocation.getItemId(), 
-						itemLocation.getLocationId()) + "\n where locationid = " + locationId;
+				"set itemId=%d, locationId= %s".formatted(itemLocation.getItemId(), 
+						newLocation) + "\n where itemId = %s and locationId = %s".formatted(itemLocation.getItemId(), itemLocation.getLocationId());
 				int rowsAffected = statment.executeUpdate(query);
 				
 				System.out.println("Success ! " + (rowsAffected) + " rows affected");
@@ -97,27 +97,27 @@ public class ItemLocationDBservice {
 	}
 	
 	
-	public ItemLocation updateItemLocationByItem(Connection connection, ItemLocation itemLocation, String itemId) {
-		
-		Item itm = itemService.getItem(connection, itemId);
-		
-		if(itm != null) {
-			
-			try (Statement statment = connection.createStatement()){
-			
-				String query = "UPDATE ItemLocation " +
-				"set itemId=%d, locationId= %d".formatted(itemLocation.getItemId(), 
-						itemLocation.getLocationId()) + "\n where itemId = " + itemId;
-				int rowsAffected = statment.executeUpdate(query);
-				
-				System.out.println("Success ! " + (rowsAffected) + " rows affected");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return itemLocation;
-	}
+//	public ItemLocation updateItemLocationByItem(Connection connection, ItemLocation itemLocation, String itemId) {
+//		
+//		Item itm = itemService.getItem(connection, itemId);
+//		
+//		if(itm != null) {
+//			
+//			try (Statement statment = connection.createStatement()){
+//			
+//				String query = "UPDATE ItemLocation " +
+//				"set itemId=%d, locationId= %d".formatted(itemLocation.getItemId(), 
+//						itemLocation.getLocationId()) + "\n where itemId = " + itemId;
+//				int rowsAffected = statment.executeUpdate(query);
+//				
+//				System.out.println("Success ! " + (rowsAffected) + " rows affected");
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		return itemLocation;
+//	}
 	
 
 	public ItemLocation deleteItemLocationByItem(Connection connection, Item item) {
@@ -138,6 +138,13 @@ public class ItemLocationDBservice {
 
 		return itmLoc;
 	}
+	
+	
+	
+	public void addListOfItemLocation() {
+		
+	}
+	
 	
 	
 }

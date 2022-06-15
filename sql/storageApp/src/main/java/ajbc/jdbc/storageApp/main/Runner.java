@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Properties;
 
 import models.Item;
+import models.ItemLocation;
 import models.Location;
 import services.ItemDBservices;
 import services.ItemLocationDBservice;
@@ -48,42 +49,71 @@ public class Runner {
 			
 			ItemDBservices itemService = new ItemDBservices();
 			LocationDBservice locationService = new LocationDBservice();
-//			itemService.createTable(connection);
-//			itemService.seedDB3Items(connection);
-	
+			ItemLocationDBservice itemLocationService = new ItemLocationDBservice();
+			
+			/******* Item & Location CREATE and insert *******/
 //			Item item = new Item("computer", 1299.99, LocalDate.of(2019, 7, 10), 4);
 //			itemService.addItem(connection, item);
-			
-			Location location = new Location("Ashdod", "992K");
+			//TODO get check for location.....
+//			itemLocationService.addItemLocation(connection, itemService.getItem(connection, "1004"), locationService.getLocation(connection, "120"));
+
+//			Location location = new Location("Ashdod", "992K"); //"sdfsdf"
 //			locationService.addLocation(connection, location);
 			
 			
+			/******* Item & Location READ *******/
 //			System.out.println(itemService.getItem(connection, "1002"));
-//			System.out.println(locationService.getLocation(connection, "110"));
+//			System.out.println(locationService.getLocation(connection, "120"));
+//			System.out.println(itemLocationService.getItemLocationByItem(connection, "1002"));
+//			System.out.println(itemLocationService.getItemLocationByLocation(connection, "120"));
 			
-//			ItemLocationDBservice itemLocationService = new ItemLocationDBservice();
-//			itemLocationService.addItem(connection, itemService.getItem(connection, "1004"), locationService.getLocation(connection, "140"));
 			
-//			Item itemToChange = itemService.getItem(connection, "1001");
-//			Location locationToChange = locationService.getLocation(connection, "150");
+			/******* Item & Location UPDATE *******/
+//			Item itemToChange = itemService.getItem(connection, "1002");
+//			Location locationToChange = locationService.getLocation(connection, "120");
+			
 //			itemToChange.setName("JDBC!");
-//			locationToChange.setLocationId(160);
-//			locationService.updateLocation(connection, locationToChange);
+//			locationToChange.setName("trilili tralala");
 			
+//			locationService.updateLocation(connection, locationToChange);
 //			itemService.updateItem(connection, itemToChange);
+			
+//			String newLocation = "130";
+//			ItemLocation oldItmLoc = itemLocationService.getItemLocationByItem(connection, "1004");
+//			itemLocationService.updateItemLocation(connection, oldItmLoc, newLocation);
+			
+			
+			
+			/******* Item & Location DELETE *******/
 //			itemLocationService.deleteItemLocationByItem(connection, itemToChange);
 //			locationService.deleteLocation(connection, locationToChange);
 //			itemService.deleteItem(connection, itemToChange);
 			
 			
-			List<String> ids = Arrays.asList("1002","1003","1040");
-			List<Item> itemList = itemService.getListItemsByIds(connection, ids);
-			itemList.get(0).setName("4444");
-			itemList.get(1).setName("5555");
-//			itemList.get(2).setName("6666");
-			List<Item> res = itemService.updateListOfItems(connection, itemList);
-					
-	
+			
+			
+			/******* Item Batch READ & UPDATE *******/
+//			List<String> ids = Arrays.asList("1003","1004","1050");
+//			List<Item> itemList = itemService.getListItemsByIds(connection, ids);
+//			System.out.println(itemList);
+//			
+//			itemList.get(0).setName("2222");
+//			itemList.get(1).setName("1111");
+//			List<Item> res = itemService.updateListOfItems(connection, itemList);
+//			System.out.println(res);
+			
+			
+			/******* Location Batch READ & UPDATE *******/
+			List<String> ids = Arrays.asList("100","130","150");
+			List<Location> locationList = locationService.getListLocationsByIds(connection, ids);
+			System.out.println(locationList);
+			
+			locationList.get(0).setName("Honolulu");
+			locationList.get(1).setName("Eilat");
+			locationList.get(2).setName("Kfar-Saba");
+			List<Location> res = locationService.updateListOfLocations(connection, locationList);
+			System.out.println(res);
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,6 +131,10 @@ public class Runner {
 	}
 	
 	
+	private static void createAndSeedItemTable(ItemDBservices itemService, Connection connection) {
+		itemService.createItemTable(connection);
+		itemService.seedDB3Items(connection);
+	}
 	
 
 }
