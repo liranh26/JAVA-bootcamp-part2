@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -75,10 +76,14 @@ public class Runner {
 //			itemService.deleteItem(connection, itemToChange);
 			
 			
-			
-			List<Item> itemList = createItems();
-			System.out.println(itemService.addListOfItems(connection, itemList));
-			
+			List<String> ids = Arrays.asList("1002","1003","1040");
+			List<Item> itemList = itemService.getListItemsByIds(connection, ids);
+			itemList.get(0).setName("4444");
+			itemList.get(1).setName("5555");
+//			itemList.get(2).setName("6666");
+			List<Item> res = itemService.updateListOfItems(connection, itemList);
+					
+	
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
