@@ -11,41 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.Item;
+import utils.ConnectionUtils;
 
 public class ItemDBservices {
-
-	public void createItemTable(Connection connection) {
-
-		try (Statement statment = connection.createStatement()) {
-			String query = "CREATE TABLE ITEM(\r\n" + "itemId int not null identity(1000,1),\r\n"
-					+ "name nvarchar(40),\r\n" + "unitPrice money,\r\n" + "purchaseDate date,\r\n" + "quantity int,\r\n"
-					+ "primary key(itemId)\r\n" + ")";
-			statment.execute(query); // TODO how to check if the table was created
-			System.out.println("Success creating the table.");
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void seedDB3Items(Connection connection) {
-
-		try (Statement statment = connection.createStatement()) {
-
-			String query = "insert into item (name, unitPrice, purchaseDate, quantity) values('mouse', 120, '2021-1-1', 1);\r\n"
-					+ "insert into item (name, unitPrice, purchaseDate, quantity) values('keyboard', 99.99, '2021-5-7', 3);\r\n"
-					+ "insert into item (name, unitPrice, purchaseDate, quantity) values('screen', 1399, '2020-2-26', 2);";
-
-			statment.executeUpdate(query);
-			System.out.println("Success -  added 3 items to DB ! ");
-
-		} catch (SQLException e) {
-			System.out.println("Something went wrong!");
-			e.printStackTrace();
-		}
-
-	}
 
 	public Item getItem(Connection connection, String id) {
 
@@ -132,7 +100,7 @@ public class ItemDBservices {
 
 	public List<Item> addListOfItems(Connection connection, List<Item> items) {
 
-		setConnectionCommitFalse(connection);
+		ConnectionUtils.setConnectionCommitFalse(connection);
 
 		String query = "INSERT into Item (name, unitPrice, purchaseDate, quantity)" + "values(?, ?, ?, ?);";
 
@@ -158,10 +126,10 @@ public class ItemDBservices {
 
 		} catch (SQLException e) {
 			System.err.println("Rolling back" + e.getMessage());
-			rollBackCon(connection);
+			ConnectionUtils.rollBackCon(connection);
 		}
 
-		setConnectionCommitTrue(connection);
+		ConnectionUtils.setConnectionCommitTrue(connection);
 
 		return getLastItems(connection, items.size());
 	}
@@ -201,7 +169,7 @@ public class ItemDBservices {
 
 	public List<Item> updateListOfItems(Connection connection, List<Item> items) {
 
-		setConnectionCommitFalse(connection);
+		ConnectionUtils.setConnectionCommitFalse(connection);
 
 		List<String> idsUpdated = new ArrayList<>();
 		String query = "UPDATE Item " + "set name=? , unitPrice= ?, purchaseDate= ?, quantity= ? \n where itemid = ?";
@@ -233,11 +201,11 @@ public class ItemDBservices {
 
 		} catch (SQLException e) {
 			System.err.println("Rolling back - " + e.getMessage());
-			rollBackCon(connection);
+			ConnectionUtils.rollBackCon(connection);
 			idsUpdated.removeAll(idsUpdated);
 		}
 
-		setConnectionCommitTrue(connection);
+		ConnectionUtils.setConnectionCommitTrue(connection);
 
 		return getListItemsByIds(connection, idsUpdated);
 	}
@@ -261,35 +229,12 @@ public class ItemDBservices {
 		return items;
 	}
 
+	
+	
+	/*** supporting functions ***/
+	
 	private boolean checkItemExist(Connection connection, String id) {
 		return getItem(connection, id) != null;
-	}
-
-	private void setConnectionCommitFalse(Connection connection) {
-		try {
-			connection.setAutoCommit(false);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private void setConnectionCommitTrue(Connection connection) {
-		try {
-			connection.setAutoCommit(true);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private void rollBackCon(Connection connection) {
-		try {
-			connection.rollback();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	private void addFakeItemToStatment(PreparedStatement preparedStatment) {
@@ -303,5 +248,38 @@ public class ItemDBservices {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void createItemTable(Connection connection) {
+
+		try (Statement statment = connection.createStatement()) {
+			String query = "CREATE TABLE ITEM(\r\n" + "itemId int not null identity(1000,1),\r\n"
+					+ "name nvarchar(40),\r\n" + "unitPrice money,\r\n" + "purchaseDate date,\r\n" + "quantity int,\r\n"
+					+ "primary key(itemId)\r\n" + ")";
+			statment.execute(query); // TODO how to check if the table was created
+			System.out.println("Success creating the table.");
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void seedDB3Items(Connection connection) {
+
+		try (Statement statment = connection.createStatement()) {
+
+			String query = "insert into item (name, unitPrice, purchaseDate, quantity) values('mouse', 120, '2021-1-1', 1);\r\n"
+					+ "insert into item (name, unitPrice, purchaseDate, quantity) values('keyboard', 99.99, '2021-5-7', 3);\r\n"
+					+ "insert into item (name, unitPrice, purchaseDate, quantity) values('screen', 1399, '2020-2-26', 2);";
+
+			statment.executeUpdate(query);
+			System.out.println("Success -  added 3 items to DB ! ");
+
+		} catch (SQLException e) {
+			System.out.println("Something went wrong!");
+			e.printStackTrace();
+		}
+
 	}
 }

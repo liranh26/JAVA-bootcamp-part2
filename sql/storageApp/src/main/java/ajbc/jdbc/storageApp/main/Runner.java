@@ -54,38 +54,43 @@ public class Runner {
 			/******* Item & Location CREATE and insert *******/
 //			Item item = new Item("computer", 1299.99, LocalDate.of(2019, 7, 10), 4);
 //			itemService.addItem(connection, item);
-			//TODO get check for location.....
-//			itemLocationService.addItemLocation(connection, itemService.getItem(connection, "1004"), locationService.getLocation(connection, "120"));
 
-//			Location location = new Location("Ashdod", "992K"); //"sdfsdf"
+//			Location location = new Location("Ashkelon", "UR10"); //"sdfsdf"
 //			locationService.addLocation(connection, location);
+			
+//			itemLocationService.addItemLocation(connection, itemService.getItem(connection, "1001"), locationService.getLocation(connection, "120"));
+			
+			
 			
 			
 			/******* Item & Location READ *******/
-//			System.out.println(itemService.getItem(connection, "1002"));
-//			System.out.println(locationService.getLocation(connection, "120"));
-//			System.out.println(itemLocationService.getItemLocationByItem(connection, "1002"));
-//			System.out.println(itemLocationService.getItemLocationByLocation(connection, "120"));
+//			System.out.println(itemService.getItem(connection, "1003"));
+//			System.out.println(locationService.getLocation(connection, "130"));
+//			System.out.println(itemLocationService.getItemLocation(
+//					connection, itemService.getItem(connection, "1003"), locationService.getLocation(connection, "100")));
+			
+			
 			
 			
 			/******* Item & Location UPDATE *******/
-//			Item itemToChange = itemService.getItem(connection, "1002");
-//			Location locationToChange = locationService.getLocation(connection, "120");
-			
+			Item itemToChange = itemService.getItem(connection, "1004");
+			Location locationToChange = locationService.getLocation(connection, "130");
+//			
 //			itemToChange.setName("JDBC!");
 //			locationToChange.setName("trilili tralala");
 			
 //			locationService.updateLocation(connection, locationToChange);
 //			itemService.updateItem(connection, itemToChange);
 			
-//			String newLocation = "130";
-//			ItemLocation oldItmLoc = itemLocationService.getItemLocationByItem(connection, "1004");
+//			String newLocation = "200";
+//			ItemLocation oldItmLoc = itemLocationService.getItemLocation(connection, itemToChange, locationToChange);
 //			itemLocationService.updateItemLocation(connection, oldItmLoc, newLocation);
 			
 			
 			
+
 			/******* Item & Location DELETE *******/
-//			itemLocationService.deleteItemLocationByItem(connection, itemToChange);
+//			itemLocationService.deleteItemLocationByItem(connection, itemLocationService.getItemLocation(connection, itemToChange, locationToChange));
 //			locationService.deleteLocation(connection, locationToChange);
 //			itemService.deleteItem(connection, itemToChange);
 			
@@ -93,26 +98,36 @@ public class Runner {
 			
 			
 			/******* Item Batch READ & UPDATE *******/
-//			List<String> ids = Arrays.asList("1003","1004","1050");
-//			List<Item> itemList = itemService.getListItemsByIds(connection, ids);
-//			System.out.println(itemList);
-//			
+			List<String> itmIds = Arrays.asList("1003","1004","1010");
+			List<Item> itemList = itemService.getListItemsByIds(connection, itmIds);
+			System.out.println(itemList);
+			
 //			itemList.get(0).setName("2222");
 //			itemList.get(1).setName("1111");
-//			List<Item> res = itemService.updateListOfItems(connection, itemList);
-//			System.out.println(res);
+//			List<Item> resultItems = itemService.updateListOfItems(connection, itemList);
+//			System.out.println(resultItems);
+			
 			
 			
 			/******* Location Batch READ & UPDATE *******/
-			List<String> ids = Arrays.asList("100","130","150");
-			List<Location> locationList = locationService.getListLocationsByIds(connection, ids);
+			List<String> locIds = Arrays.asList("130","190","150");
+			List<Location> locationList = locationService.getListLocationsByIds(connection, locIds);
 			System.out.println(locationList);
 			
-			locationList.get(0).setName("Honolulu");
-			locationList.get(1).setName("Eilat");
-			locationList.get(2).setName("Kfar-Saba");
-			List<Location> res = locationService.updateListOfLocations(connection, locationList);
-			System.out.println(res);
+//			locationList.get(0).setName("Honolulu");
+//			locationList.get(1).setName("Eilat");
+//			locationList.get(2).setName("Kfar-Saba");
+//			List<Location> resultLocations = locationService.updateListOfLocations(connection, locationList);
+//			System.out.println(resultLocations);
+			
+			
+			
+			/******* ItemLocation Batch READ & UPDATE *******/
+//			itemLocationService.addListOfItemLocation(connection, itemList, locationList);
+
+			List<String> updatedLocations = Arrays.asList("190","100","130");
+//			itemLocationService.updateListOfItemLocation(connection, itemList, locationList, updatedLocations);
+			
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

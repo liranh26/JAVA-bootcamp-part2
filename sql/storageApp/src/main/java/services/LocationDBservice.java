@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.Location;
+import utils.ConnectionUtils;
 
 public class LocationDBservice {
 
@@ -107,7 +108,7 @@ public class LocationDBservice {
 
 	public List<Location> addListOfLocation(Connection connection, List<Location> locations) {
 
-		setConnectionCommitFalse(connection);
+		ConnectionUtils.setConnectionCommitFalse(connection);
 
 		String query = "INSERT into Location (name, unitPrice, purchaseDate, quantity)" + "values(?, ?, ?, ?);";
 
@@ -131,10 +132,10 @@ public class LocationDBservice {
 
 		} catch (SQLException e) {
 			System.err.println("Rolling back" + e.getMessage());
-			rollBackCon(connection);
+			ConnectionUtils.rollBackCon(connection);
 		}
 
-		setConnectionCommitTrue(connection);
+		ConnectionUtils.setConnectionCommitTrue(connection);
 
 		return getLastLocations(connection, locations.size());
 	}
@@ -173,7 +174,7 @@ public class LocationDBservice {
 	
 	public List<Location> updateListOfLocations(Connection connection, List<Location> locations) {
 
-		setConnectionCommitFalse(connection);
+		ConnectionUtils.setConnectionCommitFalse(connection);
 
 		List<String> idsUpdated = new ArrayList<>();
 		String query = "UPDATE Location " + "set name=? , accessCode= ? \n where locationid = ?";
@@ -203,11 +204,11 @@ public class LocationDBservice {
 
 		} catch (SQLException e) {
 			System.err.println("Rolling back - " + e.getMessage());
-			rollBackCon(connection);
+			ConnectionUtils.rollBackCon(connection);
 			idsUpdated.removeAll(idsUpdated);
 		}
 
-		setConnectionCommitTrue(connection);
+		ConnectionUtils.setConnectionCommitTrue(connection);
 
 		return getListLocationsByIds(connection, idsUpdated);
 	}
@@ -245,16 +246,6 @@ public class LocationDBservice {
 		}
 	}
 	
-	private void setConnectionCommitFalse(Connection connection) {
-		try {
-			connection.setAutoCommit(false);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	
 	
 	public boolean isAccessCodeExist(Location location, Connection connection) {
 
@@ -286,24 +277,6 @@ public class LocationDBservice {
 		return exist;
 	}
 	
-	
-	private void setConnectionCommitTrue(Connection connection) {
-		try {
-			connection.setAutoCommit(true);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private void rollBackCon(Connection connection) {
-		try {
-			connection.rollback();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 	private boolean checkLocationExistById(Connection connection, String id) {
 		return getLocation(connection, id) != null;
