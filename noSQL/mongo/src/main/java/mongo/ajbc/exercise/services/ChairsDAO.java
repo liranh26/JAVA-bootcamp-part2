@@ -1,19 +1,24 @@
 package mongo.ajbc.exercise.services;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import com.google.gson.Gson;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.*;
 
 import mongo.ajbc.exercise.models.Chair;
 import mongo.ajbc.exercise.models.Measurement;
@@ -54,27 +59,93 @@ public class ChairsDAO {
 	public String insertChairList(List<Chair> chairs, MongoCollection<Document> collection) {
 
 		List<Document> chairsDoc = new ArrayList<Document>();
-		for (Chair chair : chairs) {
+		for (Chair chair : chairs)
 			chairsDoc.add(createChairDoc(chair));
-		}
+
 		String msg = collection.insertMany(chairsDoc).wasAcknowledged() ? "Succeeded" : "Failed";
 
 		return msg + " inserting chair list to DB!";
 	}
 
+	public Chair getChairById(String id, MongoCollection<Document> collection) {
+		Document chairDoc = collection.find(eq("_id", new ObjectId(id))).first();
+		// convert by Gson
+		Gson gson = new Gson();
+		System.out.println(chairDoc.toJson());
+		return gson.fromJson(chairDoc.toJson(), Chair.class);
+	}
+
+	public List<Chair> getStools(MongoCollection<Document> collection) {
+		FindIterable<Document> stoolsDoc = collection.find(eq("is_tool", true));
+		MongoCursor<Document> cursor = stoolsDoc.iterator();
+		List<Chair> stools = new ArrayList<>();
+
+		Gson gson = new Gson();
+		while (cursor.hasNext())
+			stools.add(gson.fromJson(cursor.next().toJson(), Chair.class));
+
+		return stools;
+	}
+
+	public List<Chair> getChairsManufacturerList(MongoCollection<Document> collection, List<String> manufacturers) {
+		List<Chair> chairs = new ArrayList<Chair>();
+		for (String manufacturer : manufacturers)
+			chairs.addAll(getChairsByManufacturer(collection, manufacturer));
+
+		return chairs;
+	}
+
+	public List<Chair> getChairsByManufacturer(MongoCollection<Document> collection, String manufacturer) {
+		FindIterable<Document> chairDoc = collection.find(eq("Manufacturer", manufacturer));
+		MongoCursor<Document> cursor = chairDoc.iterator();
+		List<Chair> stools = new ArrayList<>();
+
+		Gson gson = new Gson();
+		while (cursor.hasNext())
+			stools.add(gson.fromJson(cursor.next().toJson(), Chair.class));
+
+		return stools;
+	}
+
+	public List<Chair> getChairsByPrice(MongoCollection<Document> collection, int minPrice, int maxPrice) {
+		FindIterable<Document> stoolsDoc = collection.find(and(lte("price", maxPrice), gte("price", minPrice)));
+		MongoCursor<Document> cursor = stoolsDoc.iterator();
+		List<Chair> stools = new ArrayList<>();
+
+		Gson gson = new Gson();
+		while (cursor.hasNext())
+			stools.add(gson.fromJson(cursor.next().toJson(), Chair.class));
+
+		return stools;
+	}
+
+	public List<Chair> getChairsByMaxHeight(MongoCollection<Document> collection, int maxHeight) {
+		FindIterable<Document> stoolsDoc = collection.find(lte("measurment.height", maxHeight));
+		MongoCursor<Document> cursor = stoolsDoc.iterator();
+		List<Chair> stools = new ArrayList<>();
+
+		Gson gson = new Gson();
+		while (cursor.hasNext())
+			stools.add(gson.fromJson(cursor.next().toJson(), Chair.class));
+
+		return stools;
+	}
+	
+	
 	public Document createChairDoc(Chair chair) {
 
-		return new Document("_id", new ObjectId()).append("Manufacturer", chair.getManufacturer())
+		return new Document("_id", chair.getId()).append("Manufacturer", chair.getManufacturer())
 				.append("model", chair.getModel()).append("is_tool", chair.isStool()).append("price", chair.getPrice())
 				.append("measurment", createMeasureDoc(chair.getMeasurement()));
 	}
 
 	public Document createMeasureDoc(Measurement measurment) {
-		return new Document("_id", new ObjectId()).append("height", measurment.getHieght())
+		return new Document("_id", measurment.getId()).append("height", measurment.getHieght())
 				.append("width", measurment.getWidth()).append("depth", measurment.getDepth());
 	}
 
 	public void closeMongoClient() {
 		mongoClient.close();
 	}
+
 }

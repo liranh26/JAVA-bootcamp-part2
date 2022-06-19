@@ -1,23 +1,31 @@
 package mongo.ajbc.exercise.models;
+import org.bson.types.ObjectId;
 
-public class Measurement {
+import com.google.gson.annotations.SerializedName;
 
-	private String id;
-	private double hieght, width, depth;
+public class Measurement{
 
-	public Measurement(String id, double hieght, double width, double depth) {
-
+	@SerializedName("_id")
+	private ObjectId id;
+	@SerializedName("height")
+	private double hieght;
+	@SerializedName("width")
+	private double width;
+	@SerializedName("depth")
+	private double depth;
+	
+	public Measurement(ObjectId id, double hieght, double width, double depth) {
 		this.id = id;
 		this.hieght = hieght;
 		this.width = width;
 		this.depth = depth;
 	}
 
-	public String getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 

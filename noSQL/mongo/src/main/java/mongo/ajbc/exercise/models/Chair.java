@@ -1,13 +1,24 @@
 package mongo.ajbc.exercise.models;
 
+import org.bson.types.ObjectId;
+
+import com.google.gson.annotations.SerializedName;
+
 public class Chair {
 
-	private String id, manufacturer, model;
+	@SerializedName("_id")
+	private ObjectId id;
+	@SerializedName("Manufacturer")
+	private String manufacturer;
+	@SerializedName("model")
+	private String model;
+	@SerializedName("is_tool")
 	private boolean isStool;
+	@SerializedName("price")
 	private float price;
 	private Measurement measurement;
 	
-	public Chair(String id, String manufacturer, String model, boolean isStool, float price, Measurement measurement) {
+	public Chair(ObjectId id, String manufacturer, String model, boolean isStool, float price, Measurement measurement) {
 		this.id = id;
 		this.manufacturer = manufacturer;
 		this.model = model;
@@ -16,11 +27,11 @@ public class Chair {
 		this.measurement = measurement;
 	}
 
-	public String getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 
