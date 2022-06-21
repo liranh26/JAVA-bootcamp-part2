@@ -24,6 +24,7 @@ import ajbc.dataBase.project.models.Customer;
 import ajbc.dataBase.project.models.Hotel;
 import ajbc.dataBase.project.models.Order;
 import ajbc.dataBase.project.services.CustomerDAO;
+import ajbc.dataBase.project.services.HotelDAO;
 import ajbc.dataBase.project.services.OrdersDAO;
 import ajbc.dataBase.project.utils.MyConnString;
 import ajbc.dataBase.project.utils.Utils;
@@ -42,6 +43,7 @@ public class Runner {
 
 		OrdersDAO orderDAO = new OrdersDAO();
 		CustomerDAO customerDAO = new CustomerDAO();
+		HotelDAO hotelDAO = new HotelDAO();
 		
 		try (MongoClient mongoClient = MongoClients.create(settings)) {
 			
@@ -51,10 +53,16 @@ public class Runner {
 			MongoCollection<Order> ordersColl = myDB.getCollection("orders", Order.class);
 			MongoCollection<Customer> customerColl = myDB.getCollection("customers", Customer.class);
 			
-			//Q1 - all orders of customer by id
+			/**** Q1 - get all the orders of a customer by id ****/
 			Customer liran = customerDAO.getCustomerByName(customerColl, "Liran");
 			System.out.println(orderDAO.getAllOrderByCustomerId(ordersColl, liran.getId()) );
 			
+			
+			/**** Q2 - find hotels by a city name ****/
+			System.out.println(hotelDAO.getHotelsByCity(hotelColl, "tel-aviv"));
+			
+			
+			/**** Q3 - check if a hotel(id) has an available room in a specific date ****/
 			
 		}
 

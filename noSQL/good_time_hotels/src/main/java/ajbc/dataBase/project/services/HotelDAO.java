@@ -5,6 +5,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -56,17 +57,17 @@ public class HotelDAO {
 		return hotel;
 	}
 	
-	public void updateHotelOrder(MongoCollection<Hotel> collection, List<Order> orders) {
-		for (Order order : orders) {
-			FindOneAndReplaceOptions returnAfterOption = new FindOneAndReplaceOptions().returnDocument(ReturnDocument.AFTER);
-			Hotel hotel = collection.findOneAndReplace(Filters.eq("_id", order.getHotelId()), getHotelById(collection, order.getHotelId()));
-			System.out.println("The hotel has updated: " + hotel);
-		}
-	}
-	
 	public Hotel insertOrder(MongoCollection<Hotel> collection, Order order) {
 		Hotel tmp = getHotelById(collection, order.getHotelId());
 		tmp.addOrderId(order);
 		return collection.findOneAndReplace(Filters.eq("_id", order.getHotelId()), tmp);
 	}
+	
+	public List<Hotel> getHotelsByCity(MongoCollection<Hotel> collection, String city){
+		
+		List<Hotel> hotels = getHotles(collection);
+		return hotels.stream().filter(h -> h.getAddress().getCity().equalsIgnoreCase(city)).collect(Collectors.toList());
+	}
+	
+	
 }
