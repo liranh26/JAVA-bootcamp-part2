@@ -5,9 +5,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.bson.Document;
+import org.bson.json.JsonWriterSettings;
 import org.bson.types.ObjectId;
+import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerApi;
@@ -27,10 +30,12 @@ import mongo.ajbc.exercise.utils.MyConnectionString;
 public class ChairsDAO {
 
 	MongoClient mongoClient;
-
+	JsonWriterSettings prettyPrint = JsonWriterSettings.builder().indent(true).build();
+	
 	public MongoDatabase getDb(String db) {
 		ConnectionString connectionString = MyConnectionString.uri();
-		MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(connectionString)
+		MongoClientSettings settings = MongoClientSettings.builder()
+				.applyConnectionString(connectionString)
 				.serverApi(ServerApi.builder().version(ServerApiVersion.V1).build()).build();
 
 		mongoClient = MongoClients.create(settings);
@@ -67,11 +72,12 @@ public class ChairsDAO {
 		return msg + " inserting chair list to DB!";
 	}
 
-	public Chair getChairById(String id, MongoCollection<Document> collection) {
-		Document chairDoc = collection.find(eq("_id", new ObjectId(id))).first();
+	public Chair getChairById(ObjectId id, MongoCollection<Document> collection) {
+		Document chairDoc = collection.find(eq("_id", id)).first();
 		// convert by Gson
 		Gson gson = new Gson();
-		System.out.println(chairDoc.toJson());
+		Type gsonType = new TypeToken<Measurement>(){}.getType();
+		System.out.println(chairDoc.toJson(prettyPrint));
 		return gson.fromJson(chairDoc.toJson(), Chair.class);
 	}
 
@@ -144,6 +150,9 @@ public class ChairsDAO {
 				.append("width", measurment.getWidth()).append("depth", measurment.getDepth());
 	}
 
+	
+	
+	
 	public void closeMongoClient() {
 		mongoClient.close();
 	}

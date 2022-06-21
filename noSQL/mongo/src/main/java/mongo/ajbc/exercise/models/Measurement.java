@@ -14,8 +14,9 @@ public class Measurement{
 	@SerializedName("depth")
 	private double depth;
 	
-	public Measurement(ObjectId id, double hieght, double width, double depth) {
-		this.id = id;
+	public Measurement() {}
+	
+	public Measurement( double hieght, double width, double depth) {
 		this.hieght = hieght;
 		this.width = width;
 		this.depth = depth;
