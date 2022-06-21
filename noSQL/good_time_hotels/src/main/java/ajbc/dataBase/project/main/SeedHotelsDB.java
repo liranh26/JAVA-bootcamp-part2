@@ -38,12 +38,10 @@ public class SeedHotelsDB {
 
 		try (MongoClient mongoClient = MongoClients.create(settings)) {
 			
-//			Utils.seedCustomers(mongoClient);
-//			Utils.seedHotels(mongoClient);
+			Utils.seedCustomers(mongoClient);
+			Utils.seedHotels(mongoClient);
 			Utils.seedOrders(mongoClient);
-			
-			
-			
+	
 		}
 
 	}

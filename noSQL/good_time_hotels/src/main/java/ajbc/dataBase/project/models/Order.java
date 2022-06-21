@@ -20,6 +20,8 @@ public class Order {
 	@BsonProperty(value = "total_price")
 	private double totalPrice;
 	
+	public Order() {}
+	
 	public Order(ObjectId id, ObjectId hotelId, ObjectId customerId, LocalDate orderDate, LocalDate startDate,
 			int nights, double totalPrice) {
 		this.id = id;

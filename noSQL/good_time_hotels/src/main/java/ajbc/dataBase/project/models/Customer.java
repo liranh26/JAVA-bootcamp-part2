@@ -64,6 +64,10 @@ public class Customer {
 	public void setOrders(List<Order> orders) {
 		this.orders = orders;
 	}
+	
+	public void addOrder(Order order) {
+		orders.add(order);
+	}
 
 	@Override
 	public String toString() {

@@ -21,6 +21,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import ajbc.dataBase.project.models.Customer;
+import ajbc.dataBase.project.models.Hotel;
+import ajbc.dataBase.project.models.Order;
 import ajbc.dataBase.project.services.CustomerDAO;
 import ajbc.dataBase.project.services.OrdersDAO;
 import ajbc.dataBase.project.utils.MyConnString;
@@ -31,6 +33,30 @@ public class Runner {
 
 	public static void main(String[] args) {
 
+		CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
+		CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
+
+		MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(MyConnString.uri())
+				.serverApi(ServerApi.builder().version(ServerApiVersion.V1).build()).codecRegistry(codecRegistry)
+				.build();
+
+		OrdersDAO orderDAO = new OrdersDAO();
+		CustomerDAO customerDAO = new CustomerDAO();
+		
+		try (MongoClient mongoClient = MongoClients.create(settings)) {
+			
+			MongoDatabase myDB = mongoClient.getDatabase("good_times_hotels");
+			
+			MongoCollection<Hotel> hotelColl = myDB.getCollection("hotels", Hotel.class);
+			MongoCollection<Order> ordersColl = myDB.getCollection("orders", Order.class);
+			MongoCollection<Customer> customerColl = myDB.getCollection("customers", Customer.class);
+			
+			//Q1 - all orders of customer by id
+			Customer liran = customerDAO.getCustomerByName(customerColl, "Liran");
+			System.out.println(orderDAO.getAllOrderByCustomerId(ordersColl, liran.getId()) );
+			
+			
+		}
 
 	}
 

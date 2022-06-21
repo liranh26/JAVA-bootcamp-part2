@@ -84,6 +84,10 @@ public class Hotel {
 	public void setOrders(List<ObjectId> orders) {
 		this.orders = orders;
 	}
+	
+	public void addOrderId(Order order) { 
+		orders.add(order.getId());
+	}
 
 	@Override
 	public String toString() {

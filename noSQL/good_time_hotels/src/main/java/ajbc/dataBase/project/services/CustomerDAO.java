@@ -1,18 +1,46 @@
 package ajbc.dataBase.project.services;
 
-import java.util.Arrays;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import java.util.List;
 
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
 
+import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.FindOneAndReplaceOptions;
+import com.mongodb.client.model.ReturnDocument;
 
 import ajbc.dataBase.project.models.Customer;
+import ajbc.dataBase.project.models.Hotel;
+import ajbc.dataBase.project.models.Order;
+import ajbc.dataBase.project.utils.MyConnString;
 
 public class CustomerDAO {
-
-	public Customer getCustomer(MongoCollection<Customer> collection, ObjectId id) {
+	
+//	public CustomerDAO() {
+//		CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
+//		CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
+//		MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(MyConnString.uri())
+//				.serverApi(ServerApi.builder().version(ServerApiVersion.V1).build()).codecRegistry(codecRegistry)
+//				.build();
+//
+//		try (MongoClient mongoClient = MongoClients.create(settings)) {
+//			MongoDatabase myDB = mongoClient.getDatabase("good_times_hotels");
+//			collection = myDB.getCollection("customer", Customer.class);
+//		} 
+//	}
+	
+	public Customer getCustomerById(MongoCollection<Customer> collection,ObjectId id) {
 		Customer customer = collection.find(Filters.eq("_id", id)).first();
 		return customer;
 	}
@@ -22,11 +50,19 @@ public class CustomerDAO {
 		return customer;
 	}
 	
-//	public List<Customer> getCustomersList(MongoCollection<Customer> collection, ObjectId id) {
-//		
-//		Customer customer = collection.find(Filters.eq("_id", id)).first();
-//		return customer;
-//	}
+	public void updateHotelOrder(MongoCollection<Customer> collection, List<Order> orders) {
+		for (Order order : orders) {
+			FindOneAndReplaceOptions returnAfterOption = new FindOneAndReplaceOptions().returnDocument(ReturnDocument.AFTER);
+			Customer customer = collection.findOneAndReplace(Filters.eq("_id", order.getCustomerId()), getCustomerById(collection, order.getCustomerId()));
+			System.out.println("The customer has updated: " + customer);
+		}
+	}
+	
+	public Customer insertOrder(MongoCollection<Customer> collection, Order order) {
+		Customer tmp = getCustomerById(collection, order.getCustomerId());
+		tmp.addOrder(order);
+		return collection.findOneAndReplace(Filters.eq("_id", order.getCustomerId()), tmp);
+	}
 	
 	
 }
