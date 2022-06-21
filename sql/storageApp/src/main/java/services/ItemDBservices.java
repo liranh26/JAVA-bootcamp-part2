@@ -39,6 +39,7 @@ public class ItemDBservices {
 		return item;
 	}
 
+	
 	public void addItem(Connection connection, Item item) {
 		
 		try (Statement statment = connection.createStatement()) {
@@ -53,6 +54,7 @@ public class ItemDBservices {
 		}
 	}
 
+	
 	public Item updateItem(Connection connection, Item item) {
 
 		Item itm = getItem(connection, "%d".formatted(item.getItemId()));
@@ -79,6 +81,7 @@ public class ItemDBservices {
 		return item;
 	}
 
+	
 	public Item deleteItem(Connection connection, Item item) {
 		Item itm = getItem(connection, "%d".formatted(item.getItemId()));
 
@@ -98,6 +101,7 @@ public class ItemDBservices {
 		return itm;
 	}
 
+	
 	public List<Item> addListOfItems(Connection connection, List<Item> items) {
 
 		ConnectionUtils.setConnectionCommitFalse(connection);
@@ -134,6 +138,7 @@ public class ItemDBservices {
 		return getLastItems(connection, items.size());
 	}
 
+	
 	public List<Item> getLastItems(Connection connection, int lastItemsNum) {
 
 		Item item = null;
@@ -167,6 +172,7 @@ public class ItemDBservices {
 		return lastItems;
 	}
 
+	
 	public List<Item> updateListOfItems(Connection connection, List<Item> items) {
 
 		ConnectionUtils.setConnectionCommitFalse(connection);
@@ -210,6 +216,7 @@ public class ItemDBservices {
 		return getListItemsByIds(connection, idsUpdated);
 	}
 
+	
 	public List<Item> getListItemsByIds(Connection connection, List<String> ids) {
 
 		List<Item> items = new ArrayList<Item>();

@@ -11,7 +11,7 @@ public class ConnectionUtils {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 
 	public static void setConnectionCommitFalse(Connection connection) {

@@ -29,6 +29,7 @@ public class LocationDBservice {
 		}
 	}
 
+	
 	public Location getLocation(Connection connection, String locationId){
 
 		Location location = null;
@@ -54,6 +55,7 @@ public class LocationDBservice {
 		return location;
 	}
 
+	
 	public Location updateLocation(Connection connection, Location location) {
 		
 		Location loc = getLocation(connection, "%d".formatted(location.getLocationId()));
@@ -63,20 +65,13 @@ public class LocationDBservice {
 		}
 
 		if (!location.equals(loc)) {
-//			ItemLocationDBservice itmLocService = new ItemLocationDBservice();
+			
 			try (Statement statment = connection.createStatement()) {
 				String query = "UPDATE Location "
 						+ "set name='%s', accessCode= '%s'".formatted(location.getName(), location.getAccessCode())
 						+ "\n where locationid = %d".formatted(location.getLocationId());
 
-//				ItemLocation itmLoc = itmLocService.getItemLocationByLocation(connection, "%d".formatted(location.getLocationId()));
-//				
-//				String query2 = "UPDATE ItemLocation " +
-//						"set itemId=%d, locationId= %d".formatted(itmLoc.getItemId(), 
-//								itmLoc.getLocationId()) + "\n where locationId = %d".formatted(location.getLocationId());
-
 				int rowsAffected = statment.executeUpdate(query);
-//				int rowsAffected2 = statment.executeUpdate(query2);
 
 				System.out.println("Success ! " + (rowsAffected) + " rows affected");
 			} catch (SQLException e) {
@@ -87,6 +82,7 @@ public class LocationDBservice {
 		return location;
 	}
 
+	
 	public Location deleteLocation(Connection connection, Location location) {
 		Location loc = getLocation(connection, "%d".formatted(location.getLocationId()));
 
@@ -106,6 +102,7 @@ public class LocationDBservice {
 		return loc;
 	}
 
+	
 	public List<Location> addListOfLocation(Connection connection, List<Location> locations) {
 
 		ConnectionUtils.setConnectionCommitFalse(connection);
@@ -139,6 +136,7 @@ public class LocationDBservice {
 
 		return getLastLocations(connection, locations.size());
 	}
+
 
 	public List<Location> getLastLocations(Connection connection, int lastLocationsNum) {
 
@@ -230,7 +228,7 @@ public class LocationDBservice {
 			e.printStackTrace();
 		}
 
-		return items;
+		return items; 
 	}
 	
 	
@@ -261,6 +259,7 @@ public class LocationDBservice {
 		}
 		return exist;
 	}
+	
 	
 	public boolean isLocationExist(Connection connection, String locationId) {
 

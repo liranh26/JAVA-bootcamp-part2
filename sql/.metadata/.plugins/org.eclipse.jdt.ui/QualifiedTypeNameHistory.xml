@@ -4,18 +4,21 @@
     <fullyQualifiedTypeName name="java.sql.DriverManager"/>
     <fullyQualifiedTypeName name="java.lang.String"/>
     <fullyQualifiedTypeName name="utils.DBconnection"/>
-    <fullyQualifiedTypeName name="java.sql.Connection"/>
     <fullyQualifiedTypeName name="java.util.Date"/>
-    <fullyQualifiedTypeName name="java.time.LocalDate"/>
     <fullyQualifiedTypeName name="services.LocationDBservice"/>
     <fullyQualifiedTypeName name="services.ItemDBservices"/>
-    <fullyQualifiedTypeName name="models.ItemLocation"/>
     <fullyQualifiedTypeName name="services.ItemLocationDBservice"/>
-    <fullyQualifiedTypeName name="java.util.List"/>
-    <fullyQualifiedTypeName name="java.sql.Statement"/>
     <fullyQualifiedTypeName name="java.sql.Date"/>
     <fullyQualifiedTypeName name="java.sql.PreparedStatement"/>
-    <fullyQualifiedTypeName name="java.util.ArrayList"/>
     <fullyQualifiedTypeName name="models.Item"/>
+    <fullyQualifiedTypeName name="java.sql.Connection"/>
+    <fullyQualifiedTypeName name="java.sql.Statement"/>
+    <fullyQualifiedTypeName name="java.util.Arrays"/>
+    <fullyQualifiedTypeName name="java.time.LocalDate"/>
+    <fullyQualifiedTypeName name="java.sql.SQLException"/>
     <fullyQualifiedTypeName name="models.Location"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="utils.ConnectionUtils"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="models.ItemLocation"/>
 </qualifiedTypeNameHistroy>
