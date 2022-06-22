@@ -25,6 +25,7 @@ import ajbc.dataBase.project.models.Order;
 import ajbc.dataBase.project.models.Room;
 import ajbc.dataBase.project.services.CustomerDAO;
 import ajbc.dataBase.project.services.HotelDAO;
+import ajbc.dataBase.project.services.OrdersDAO;
 
 import java.util.Random;
 
@@ -70,7 +71,7 @@ public class Utils {
 	}
 	
 	
-	public static String seedOrders(MongoClient mongoClient) {
+	public static void seedOrders(MongoClient mongoClient) {
 		HotelDAO hotelsDAO = new HotelDAO();
 		CustomerDAO customerDAO = new CustomerDAO();
 
@@ -96,22 +97,28 @@ public class Utils {
 						new Order(new ObjectId(), bello.getId(), guy.getId(),
 								LocalDate.of(2022, 5, 6), LocalDate.of(2022, 12, 12), 5, bello.getPricePerNight() * 5),
 						
-						new Order(new ObjectId(), lindo.getId(), sapir.getId(),
-								LocalDate.of(2022, 5, 6), LocalDate.of(2022, 12, 12), 5, lindo.getPricePerNight() * 5),
+						new Order(new ObjectId(), bello.getId(), liran.getId(),
+								LocalDate.of(2021, 11, 12), LocalDate.of(2022, 8, 9), 4, bello.getPricePerNight() * 4),
 						
 						new Order(new ObjectId(), bello.getId(), amir.getId(),
-								LocalDate.of(2021, 11, 12), LocalDate.of(2022, 8, 9), 4, bello.getPricePerNight() * 4)	
+								LocalDate.of(2021, 11, 12), LocalDate.of(2022, 8, 9), 4, bello.getPricePerNight() * 4),
+
+						new Order(new ObjectId(), lindo.getId(), sapir.getId(),
+								LocalDate.of(2022, 5, 6), LocalDate.of(2022, 12, 12), 5, lindo.getPricePerNight() * 5)
+					
 				);
 		
 		ordersColl.drop(); 
-		String msg = ordersColl.insertMany(orders).wasAcknowledged() ? "Succeeded" : "Failed";
+//		String msg = ordersColl.insertMany(orders).wasAcknowledged() ? "Succeeded" : "Failed";
 		
+		 OrdersDAO ordersDAO = new OrdersDAO();
 		for (Order order : orders) {
-			customerDAO.insertOrder(customerColl, order);
-		 	hotelsDAO.insertOrder(hotelColl, order);
+//			customerDAO.insertOrder(customerColl, order);
+//		 	hotelsDAO.insertOrder(hotelColl, order);
+			ordersDAO.addOrder(ordersColl, hotelColl, customerColl, order);
 		}
 		
-		return msg + " inserting chair list to DB!";
+//		return msg + " inserting chair list to DB!";
 
 	}
 

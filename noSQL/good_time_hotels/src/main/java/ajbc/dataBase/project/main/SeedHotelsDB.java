@@ -27,8 +27,6 @@ public class SeedHotelsDB {
 
 	public static void main(String[] args) {
 
-		JsonWriterSettings prettyPrint = JsonWriterSettings.builder().indent(true).build();
-
 		CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
 		CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
 
@@ -43,7 +41,5 @@ public class SeedHotelsDB {
 			Utils.seedOrders(mongoClient);
 	
 		}
-
 	}
-	
 }

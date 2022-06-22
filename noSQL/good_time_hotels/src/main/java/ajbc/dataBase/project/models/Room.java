@@ -15,7 +15,9 @@ public class Room {
 	@BsonProperty(value = "has_tub")
 	private boolean hasTub;
 	@BsonProperty(value = "dates_reserved")
-	private List<LocalDate> datesReserved = new ArrayList<LocalDate>();;
+	private List<LocalDate> datesReserved;
+	@BsonProperty(value = "room_orders")
+	private List<Order> roomOrders;
 	
 	public Room() {}
 	
@@ -23,11 +25,28 @@ public class Room {
 		this.id = id;
 		this.number = number;
 		this.hasTub = hasTub;
-//		datesReserved = new ArrayList<LocalDate>();
+		datesReserved = new ArrayList<LocalDate>();
+		roomOrders = new ArrayList<Order>(); 
 	}
 	
+	public void addOrder(Order order) {
+		roomOrders.add(order);
+	}
+	
+	public List<Order> getRoomOrders() {
+		return roomOrders;
+	}
+
+	public void setRoomOrders(List<Order> roomOrders) {
+		this.roomOrders = roomOrders;
+	}
+
 	public List<LocalDate> getDatesReserved() {
 		return datesReserved;
+	}
+	
+	public void setDatesReserved(List<LocalDate> datesReserved) {
+		this.datesReserved = datesReserved;
 	}
 
 	public void addDate(LocalDate date) {
@@ -58,14 +77,12 @@ public class Room {
 	public void setHasTub(boolean hasTub) {
 		this.hasTub = hasTub;
 	}
-	
-	
 
 	@Override
 	public String toString() {
-		return "Room [id=" + id + ", number=" + number + ", hasTub=" + hasTub + "]";
+		return "Room [id=" + id + ", number=" + number + ", hasTub=" + hasTub + ", datesReserved=" + datesReserved
+				+ "]";
 	}
-	
-	
+
 	
 }

@@ -1,9 +1,14 @@
 package ajbc.dataBase.project.services;
 
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.json.JsonWriterSettings;
 import org.bson.types.ObjectId;
 
@@ -22,27 +27,39 @@ import ajbc.dataBase.project.models.Hotel;
 import ajbc.dataBase.project.models.Order;
 import ajbc.dataBase.project.utils.MyConnString;
 
+public class OrdersDAO {
 
-public class ordersDAO {
-	
+
+
 	HotelDAO hotelDAO = new HotelDAO();
 	CustomerDAO customerDAO = new CustomerDAO();
 	
-	public List<Order> getAllOrderByCustomerId(MongoCollection<Order> collection, ObjectId id){
+	public Order getOrderById(MongoCollection<Order> collection, ObjectId id) {
+		return collection.find(Filters.eq("_id", id)).first();
+	}
+
+	
+	public List<Order> getAllOrderByCustomerId(MongoCollection<Order> collection, ObjectId id) {
 
 		return collection.find(Filters.eq("customer_id", id)).into(new ArrayList<>());
 	}
+	
+	
 
-	public void addOrder(MongoCollection<Order> orderColl, MongoCollection<Hotel> hotelColl, MongoCollection<Customer> customerColl, Order order) {
-		
-		int days = order.getNights();
-		
-		orderColl.insertOne(order);
-		hotelDAO.insertOrder(hotelColl, order);
+	public void addOrder(MongoCollection<Order> orderColl, MongoCollection<Hotel> hotelColl,
+			MongoCollection<Customer> customerColl, Order order) {
+
+		if(hotelDAO.insertOrder(hotelColl, order) == null) {
+			System.out.println("Dates not availble!");
+		}
+			
 		customerDAO.insertOrder(customerColl, order);
-		
-	}
 
+		orderColl.insertOne(order);
+	}
+	
+	
+	
 }
 
 
@@ -57,9 +74,16 @@ public class ordersDAO {
 
 
 
+	
+	
 
-
-
+//	public void deleteOrder(MongoCollection<Order> orderColl, MongoCollection<Hotel> hotelColl, MongoCollection<Customer> customerColl, Order order) {
+//		
+//		customerDAO.deleteOrder(customerColl, order);
+//		hotelDAO.deleteOrder(hotelColl, order);
+//		
+//		orderColl.deleteOne(Filters.eq("_id", order.getId()));
+//	}
 
 
 //MongoClient mongoClient;

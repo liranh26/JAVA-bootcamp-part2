@@ -51,5 +51,8 @@ public class CustomerDAO {
 		return collection.findOneAndReplace(Filters.eq("_id", order.getCustomerId()), tmp);
 	}
 	
+	public void deleteOrder(MongoCollection<Customer> collection, Order order) {
+		collection.deleteOne(Filters.eq("orders._id", order.getId()));
+	}
 	
 }
