@@ -63,7 +63,9 @@ public class Runner {
 			
 			/**** Q3 - check if a hotel(id) has an available room in a specific date ****/
 //			System.out.println(hotelDAO.hasAvailbeRoomAtDate(hotelColl,	hotelDAO.getHotelByName(hotelColl, "Bello").getId(), LocalDate.of(2022, 8, 9)));
-		
+			MongoCollection<Document> doc1 = myDB.getCollection("hotels");
+			hotelDAO.hasAvailbeRoom(doc1, hotelDAO.getHotelByName(hotelColl, "Bello").getId(), LocalDate.of(2022, 8, 9));
+			
 			
 			/**** Q4 - create an order for a hotel room in a specific date for x number of nights ****/
 //			Hotel bello = hotelDAO.getHotelByName(hotelColl, "Bello");
@@ -73,14 +75,8 @@ public class Runner {
 			
 			
 			/**** Q5 - cancel an order ****/
-//			MongoCollection<Document> doc1 = myDB.getCollection("customers");
-			Order order = orderDAO.getAllOrderByCustomerId(ordersColl, liran.getId()).get(0);
+//			Order order = orderDAO.getAllOrderByCustomerId(ordersColl, liran.getId()).get(0);
 //			orderDAO.deleteOrder(ordersColl, hotelColl, customerColl, order);
-			
-			customerDAO.deleteOrder(customerColl, order);
-			
-//			Bson filter = Filters.eq("orders._id", order.getId());
-//			doc1.find(filter);
 
 			
 			/**** Q6 - sort by income ****/

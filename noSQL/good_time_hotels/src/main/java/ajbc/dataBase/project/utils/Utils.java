@@ -1,22 +1,15 @@
 package ajbc.dataBase.project.utils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjuster;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.InsertManyResult;
 
 import ajbc.dataBase.project.models.Address;
 import ajbc.dataBase.project.models.Customer;
@@ -26,8 +19,6 @@ import ajbc.dataBase.project.models.Room;
 import ajbc.dataBase.project.services.CustomerDAO;
 import ajbc.dataBase.project.services.HotelDAO;
 import ajbc.dataBase.project.services.OrdersDAO;
-
-import java.util.Random;
 
 public class Utils {
 

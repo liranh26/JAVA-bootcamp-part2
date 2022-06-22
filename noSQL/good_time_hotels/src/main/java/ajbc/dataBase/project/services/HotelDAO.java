@@ -75,26 +75,24 @@ public class HotelDAO {
 	}
 
 	private Room getAvailbleRoom(MongoCollection<Hotel> collection, Hotel hotel, Order order) {
-		boolean empty;
-
+		boolean isEmpty;
 		for (Room room : hotel.getRooms()) {
-			if(room == null)
+			if (room == null)
 				continue;
-			empty = true;
-			for (int i = 0; i < order.getNights(); i++) {
+
+			isEmpty = true;
+			// check if the room id occupied in the required dates
+			for (int i = 0; i < order.getNights(); i++)
 				if (room.getDatesReserved().contains(order.getStartDate().plusDays(i))) {
-					empty = false;
+					isEmpty = false;
 					break;
 				}
-			}
-			if (empty) {
-				return room;
-			}
-		}
 
+			if (isEmpty)
+				return room;
+		} 
 		return null;
 	}
-
 
 	public boolean hasAvailbeRoomAtDate(MongoCollection<Hotel> collection, ObjectId hotelId, LocalDate date) {
 
@@ -102,16 +100,32 @@ public class HotelDAO {
 		boolean ans = false;
 		int numRooms = 0;
 
-		for (Room room : hotel.getRooms()) {
-			if (room.getDatesReserved().contains(date)) {
+		for (Room room : hotel.getRooms()) 
+			if (room.getDatesReserved().contains(date)) 
 				numRooms++;
-			}
-		}
+			
 		if (numRooms < hotel.getRooms().size())
 			ans = true;
 
 		return ans;
 	}
+	
+	
+	public void hasAvailbeRoom(MongoCollection<Document> collection, ObjectId hotelId, LocalDate date) {
+
+		Bson unwind = unwind("$rooms");
+		Bson unwind2 = unwind("$dates_reserved");
+		Bson match = match(eq("_id", hotelId));
+		Bson match2 = match(eq("dates_reserved.date", date));
+		
+		AggregateIterable<Document> doc = collection.aggregate(Arrays.asList(unwind, match));
+		
+		doc.forEach(d -> System.out.println(d.toJson(JsonWriterSettings.builder().indent(true).build())));
+	
+	}
+	
+	
+	
 
 	public List<Hotel> getHotelsByCity(MongoCollection<Hotel> collection, String city) {
 		Bson filter = eq("address.city", city);
@@ -119,30 +133,28 @@ public class HotelDAO {
 	}
 
 	public void deleteOrder(MongoCollection<Hotel> collection, Order order) {
-
 		Hotel hotel = getHotelById(collection, order.getHotelId());
-		for (Room room : hotel.getRooms()) {
-			if (room.getRoomOrders().remove(order.getId())) {
-				//remove dates of room reserved
+		
+		for (Room room : hotel.getRooms()) 
+			if (room.getRoomOrders().remove(order.getId())) 
+				// remove dates of room reserved
 				for (int i = 0; i < order.getNights(); i++)
 					room.getDatesReserved().remove(order.getStartDate().plusDays(i));
-			}
-		}
 
 		hotel.getOrders().remove(order.getId());
 		hotel.addIncome(hotel.getPricePerNight() * order.getNights() * SUBTRACT);
-		
-        Bson filter = eq("_id", hotel.getId());
-        UpdateResult updateResult = collection.replaceOne(filter, hotel);
-        System.out.println(updateResult);
+
+		Bson filter = eq("_id", hotel.getId());
+		UpdateResult updateResult = collection.replaceOne(filter, hotel);
+		System.out.println(updateResult);
 	}
 
 	public void sortHotelByIncome(MongoCollection<Document> collection) {
 		Bson sort = sort(Sorts.descending("total_income"));
 		Bson projectFields = project(fields(excludeId(), include("name", "total_income")));
-		
+
 		List<Document> res = collection.aggregate(Arrays.asList(sort, projectFields)).into(new ArrayList<>());
 		res.forEach(d -> System.out.println(d.toJson(JsonWriterSettings.builder().indent(true).build())));
 	}
-	
+
 }
