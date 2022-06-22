@@ -37,13 +37,6 @@ public class CustomerDAO {
 		return customer;
 	}
 	
-	public void updateHotelOrder(MongoCollection<Customer> collection, List<Order> orders) {
-		for (Order order : orders) {
-			FindOneAndReplaceOptions returnAfterOption = new FindOneAndReplaceOptions().returnDocument(ReturnDocument.AFTER);
-			Customer customer = collection.findOneAndReplace(Filters.eq("_id", order.getCustomerId()), getCustomerById(collection, order.getCustomerId()));
-			System.out.println("The customer has updated: " + customer);
-		}
-	}
 	
 	public Customer insertOrder(MongoCollection<Customer> collection, Order order) {
 		Customer tmp = getCustomerById(collection, order.getCustomerId());

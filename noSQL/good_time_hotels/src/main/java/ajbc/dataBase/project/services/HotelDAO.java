@@ -53,7 +53,7 @@ public class HotelDAO {
 		Hotel tmpHotel = getHotelById(collection, order.getHotelId());
 
 		Room room = getAvailbleRoom(collection, tmpHotel, order);
-		
+
 		if (room == null)
 			return null;
 
@@ -70,14 +70,13 @@ public class HotelDAO {
 			room.addDate(order.getStartDate().plusDays(i));
 	}
 
-	
 	private Room getAvailbleRoom(MongoCollection<Hotel> collection, Hotel hotel, Order order) {
 		boolean empty;
 
 		for (Room room : hotel.getRooms()) {
 			empty = true;
 			for (int i = 0; i < order.getNights(); i++) {
-				if(room.getDatesReserved().contains(order.getStartDate().plusDays(i))) {
+				if (room.getDatesReserved().contains(order.getStartDate().plusDays(i))) {
 					empty = false;
 					break;
 				}
@@ -90,7 +89,6 @@ public class HotelDAO {
 		return null;
 	}
 
-	
 	// TODO fix double dates
 	public boolean hasAvailbeRoomAtDate(MongoCollection<Hotel> collection, ObjectId hotelId, LocalDate date) {
 
@@ -99,14 +97,14 @@ public class HotelDAO {
 		int numRooms = 0;
 
 		for (Room room : hotel.getRooms()) {
-			if(room.getDatesReserved().contains(date)) {
+			if (room.getDatesReserved().contains(date)) {
 				System.out.println("Occupied!");
 				numRooms++;
 			}
 		}
-		if(numRooms < hotel.getRooms().size())
+		if (numRooms < hotel.getRooms().size())
 			ans = true;
-	
+
 		return ans;
 //		Bson filter = eq("_id", hotelId);
 //		Bson filter2 = nin("rooms.dates_reserved", date);
@@ -121,25 +119,31 @@ public class HotelDAO {
 
 	public void deleteOrder(MongoCollection<Hotel> collection, Order order) {
 
-		Bson hotelFilter = eq("_id", order.getHotelId());
+//		Bson hotelFilter = eq("_id", order.getHotelId());
+//
+//		Bson roomFilter = eq("rooms.*.room_orders", order.getId());
+//		Bson filters = combine(hotelFilter, roomFilter);
+//
+//		collection.findOneAndDelete(filters);
 
-		Bson roomFilter = eq("rooms.*.room_orders", order.getId());
-		Bson filters = combine(hotelFilter, roomFilter);
+		Hotel hotel = getHotelById(collection, order.getHotelId());
 
-		collection.findOneAndDelete(filters);
+		for (Room room : hotel.getRooms()) {
 
-//		if(hotel.getRooms() != null)
-//			for (Room room : hotel.getRooms()) {
-//				if(room.getRoomOrders().contains(order)) 
-//					for (int i = 0; i < order.getNights(); i++) {
-//						room.getDatesReserved().remove(order.getStartDate().plusDays(i));	
-//					
-//					room.getRoomOrders().remove(order);
-//				}
-//			}
-//		hotel.getOrders().remove(order.getId());
-//		
-//		updateHotel(collection, hotel);
+			if (room.getRoomOrders().remove(order.getId())) {
+				System.out.println("exist!");
+				for (int i = 0; i < order.getNights(); i++)
+					room.getDatesReserved().remove(order.getStartDate().plusDays(i));
+
+			}
+			System.out.println(room);
+		}
+
+		hotel.getOrders().remove(order.getId());
+		
+        Bson filter = eq("_id", hotel.getId());
+        UpdateResult updateResult = collection.replaceOne(filter, hotel);
+        System.out.println(updateResult);
 	}
 
 	public void updateHotel(MongoCollection<Hotel> collection, Hotel hotel) {

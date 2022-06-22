@@ -51,11 +51,21 @@ public class OrdersDAO {
 
 		if(hotelDAO.insertOrder(hotelColl, order) == null) {
 			System.out.println("Dates not availble!");
+			return;
 		}
 			
 		customerDAO.insertOrder(customerColl, order);
 
 		orderColl.insertOne(order);
+	}
+	
+	
+	public void deleteOrder(MongoCollection<Order> orderColl, MongoCollection<Hotel> hotelColl,
+			MongoCollection<Customer> customerColl, Order order) {
+		
+		hotelDAO.deleteOrder(hotelColl, order);
+		customerDAO.deleteOrder(customerColl, order);
+		orderColl.findOneAndDelete(Filters.eq("_id", order.getId()));
 	}
 	
 	

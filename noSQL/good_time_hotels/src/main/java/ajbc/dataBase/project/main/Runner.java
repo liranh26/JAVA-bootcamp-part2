@@ -72,8 +72,20 @@ public class Runner {
 			
 			
 			/**** Q3 - check if a hotel(id) has an available room in a specific date ****/
-			System.out.println(hotelDAO.hasAvailbeRoomAtDate(hotelColl,	hotelDAO.getHotelByName(hotelColl, "Bello").getId(), LocalDate.of(2022, 8, 9)));
+//			System.out.println(hotelDAO.hasAvailbeRoomAtDate(hotelColl,	hotelDAO.getHotelByName(hotelColl, "Bello").getId(), LocalDate.of(2022, 8, 9)));
 		
+			
+			/**** Q4 - create an order for a hotel room in a specific date for x number of nights ****/
+//			Hotel bello = hotelDAO.getHotelByName(hotelColl, "Bello");
+//			orderDAO.addOrder(ordersColl, hotelColl, customerColl,
+//					new Order(new ObjectId(), bello.getId(), liran.getId(),
+//					LocalDate.of(2022, 5, 6), LocalDate.of(2022, 12, 14), 5, bello.getPricePerNight() * 5));
+			
+			
+			/**** Q5 - cancel an order ****/
+			Order order = orderDAO.getAllOrderByCustomerId(ordersColl, liran.getId()).get(0);
+			orderDAO.deleteOrder(ordersColl, hotelColl, customerColl, order);
+
 			
 			
 			
@@ -114,11 +126,7 @@ public class Runner {
 			
 			
 			
-			/**** Q4 - create an order for a hotel room in a specific date for x number of nights ****/
-//			Hotel bello = hotelDAO.getHotelByName(hotelColl, "Bello");
-//			orderDAO.addOrder(ordersColl, hotelColl, customerColl
-//					new Order(new ObjectId(), bello.getId(), liran.getId(),
-//					LocalDate.of(2022, 5, 6), LocalDate.of(2022, 12, 12), 5, bello.getPricePerNight() * 5));
+
 			
 			
 			/**** Q5 - cancel an order ****/
