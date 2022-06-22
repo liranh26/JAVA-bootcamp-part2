@@ -27,19 +27,6 @@ import ajbc.dataBase.project.utils.MyConnString;
 
 public class CustomerDAO {
 	
-//	public CustomerDAO() {
-//		CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
-//		CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
-//		MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(MyConnString.uri())
-//				.serverApi(ServerApi.builder().version(ServerApiVersion.V1).build()).codecRegistry(codecRegistry)
-//				.build();
-//
-//		try (MongoClient mongoClient = MongoClients.create(settings)) {
-//			MongoDatabase myDB = mongoClient.getDatabase("good_times_hotels");
-//			collection = myDB.getCollection("customer", Customer.class);
-//		} 
-//	}
-	
 	public Customer getCustomerById(MongoCollection<Customer> collection,ObjectId id) {
 		Customer customer = collection.find(Filters.eq("_id", id)).first();
 		return customer;

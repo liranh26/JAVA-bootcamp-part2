@@ -1,47 +1,21 @@
 package ajbc.dataBase.project.services;
 
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
 
-import com.mongodb.MongoClientSettings;
-import com.mongodb.ServerApi;
-import com.mongodb.ServerApiVersion;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.FindOneAndReplaceOptions;
-import com.mongodb.client.model.ReturnDocument;
-
 import ajbc.dataBase.project.models.Hotel;
 import ajbc.dataBase.project.models.Order;
-import ajbc.dataBase.project.utils.MyConnString;
+import ajbc.dataBase.project.models.Room;
 
 
 public class HotelDAO {
 	MongoCollection<Hotel> collection;
-	
-//	public HotelDAO() {
-//		CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
-//		CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
-//		MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(MyConnString.uri())
-//				.serverApi(ServerApi.builder().version(ServerApiVersion.V1).build()).codecRegistry(codecRegistry)
-//				.build();
-//
-//		try (MongoClient mongoClient = MongoClients.create(settings)) {
-//			MongoDatabase myDB = mongoClient.getDatabase("good_times_hotels");
-//			collection = myDB.getCollection("hotels", Hotel.class);
-//		}
-//	}
 	
 	public List<Hotel> getHotles(MongoCollection<Hotel> collection){
 		return collection.find().into(new ArrayList<>());
@@ -59,7 +33,10 @@ public class HotelDAO {
 	
 	public Hotel insertOrder(MongoCollection<Hotel> collection, Order order) {
 		Hotel tmp = getHotelById(collection, order.getHotelId());
-		tmp.addOrderId(order);
+		
+		if(tmp.checkAvailbleRoom(order.getStartDate(), order.getNights())) {
+			tmp.addOrderId(order);
+		}
 		return collection.findOneAndReplace(Filters.eq("_id", order.getHotelId()), tmp);
 	}
 	
@@ -69,5 +46,9 @@ public class HotelDAO {
 		return hotels.stream().filter(h -> h.getAddress().getCity().equalsIgnoreCase(city)).collect(Collectors.toList());
 	}
 	
-	
+	public Room checkRoomAtDate(MongoCollection<Hotel> collection, ObjectId id, LocalDate date) {
+		
+		
+		return null;
+	}
 }

@@ -9,6 +9,8 @@ public class Room {
 	private int number;
 	@BsonProperty(value = "has_tub")
 	private boolean hasTub;
+	@BsonProperty(value = "is_occupied")
+	private boolean isOccupied;
 	
 	public Room() {}
 	
@@ -16,6 +18,15 @@ public class Room {
 		this.id = id;
 		this.number = number;
 		this.hasTub = hasTub;
+		isOccupied = false;
+	}
+
+	public boolean isOccupied() {
+		return isOccupied;
+	}
+
+	public void setOccupied(boolean isOccupied) {
+		this.isOccupied = isOccupied;
 	}
 
 	public ObjectId getId() {
@@ -41,6 +52,8 @@ public class Room {
 	public void setHasTub(boolean hasTub) {
 		this.hasTub = hasTub;
 	}
+	
+	
 
 	@Override
 	public String toString() {
