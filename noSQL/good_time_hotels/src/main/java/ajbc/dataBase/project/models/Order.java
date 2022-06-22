@@ -10,10 +10,6 @@ public class Order {
 	private ObjectId id;
 	@BsonProperty(value = "hotel_id")
 	private ObjectId hotelId;
-	
-//	@BsonProperty(value = "room_id")
-//	private ObjectId roomId;
-	
 	@BsonProperty(value = "customer_id")
 	private ObjectId customerId;
 	@BsonProperty(value = "order_date")

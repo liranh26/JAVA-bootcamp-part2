@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.json.JsonWriterSettings;
 import org.bson.types.ObjectId;
 
 import static com.mongodb.client.model.Accumulators.*;
@@ -19,7 +20,9 @@ import static com.mongodb.client.model.Updates.*;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 
@@ -28,6 +31,7 @@ import ajbc.dataBase.project.models.Order;
 import ajbc.dataBase.project.models.Room;
 
 public class HotelDAO {
+	private final int SUBTRACT = -1;
 
 	public Room getRoomById(MongoCollection<Hotel> collection, ObjectId id) {
 		Hotel tmpHotel = collection.find(Filters.eq("rooms._id", id)).first();
@@ -65,7 +69,7 @@ public class HotelDAO {
 	private void addOrderDetails(Hotel tmpHotel, Room room, Order order) {
 		tmpHotel.addOrderId(order);
 		room.addOrder(order);
-
+		tmpHotel.addIncome(tmpHotel.getPricePerNight() * order.getNights());
 		for (int i = 0; i < order.getNights(); i++)
 			room.addDate(order.getStartDate().plusDays(i));
 	}
@@ -106,10 +110,6 @@ public class HotelDAO {
 			ans = true;
 
 		return ans;
-//		Bson filter = eq("_id", hotelId);
-//		Bson filter2 = nin("rooms.dates_reserved", date);
-//		Bson filters = combine(filter, filter2);
-//		System.out.println(collection.find(filters).into(new ArrayList<>()));
 	}
 
 	public List<Hotel> getHotelsByCity(MongoCollection<Hotel> collection, String city) {
@@ -119,36 +119,31 @@ public class HotelDAO {
 
 	public void deleteOrder(MongoCollection<Hotel> collection, Order order) {
 
-//		Bson hotelFilter = eq("_id", order.getHotelId());
-//
-//		Bson roomFilter = eq("rooms.*.room_orders", order.getId());
-//		Bson filters = combine(hotelFilter, roomFilter);
-//
-//		collection.findOneAndDelete(filters);
-
 		Hotel hotel = getHotelById(collection, order.getHotelId());
-
 		for (Room room : hotel.getRooms()) {
-
 			if (room.getRoomOrders().remove(order.getId())) {
-				System.out.println("exist!");
+				//remove dates of room reserved
 				for (int i = 0; i < order.getNights(); i++)
 					room.getDatesReserved().remove(order.getStartDate().plusDays(i));
-
 			}
-			System.out.println(room);
 		}
 
 		hotel.getOrders().remove(order.getId());
+		hotel.addIncome(hotel.getPricePerNight() * order.getNights() * SUBTRACT);
 		
         Bson filter = eq("_id", hotel.getId());
         UpdateResult updateResult = collection.replaceOne(filter, hotel);
         System.out.println(updateResult);
 	}
 
-	public void updateHotel(MongoCollection<Hotel> collection, Hotel hotel) {
-		Bson filter = eq("_id", hotel.getId());
-		collection.updateOne(filter, (Bson) hotel);
+	public void sortHotelByIncome(MongoCollection<Document> collection) {
+		Bson sort = sort(Sorts.descending("total_income"));
+		Bson projectFields = project(fields(excludeId(), include("name", "total_income")));
+		
+		List<Document> res = collection.aggregate(Arrays.asList(sort, projectFields)).into(new ArrayList<>());
+		res.forEach(d -> System.out.println(d.toJson(JsonWriterSettings.builder().indent(true).build())));
 	}
-
+	
+	
+	
 }

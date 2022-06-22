@@ -19,6 +19,8 @@ public class Hotel {
 	@BsonProperty(value = "night_price")
 	private float pricePerNight;
 	private List<ObjectId> orders;
+	@BsonProperty(value = "total_income")
+	private double totalIncome;
 	
 	public Hotel() {}
 	
@@ -31,6 +33,19 @@ public class Hotel {
 		this.rooms = rooms;
 		this.pricePerNight = pricePerNight;
 		this.orders = orders;
+		totalIncome = 0;
+	}
+
+	public void addIncome(double amount) {
+		totalIncome += amount;
+	}
+	
+	public double getTotalIncome() {
+		return totalIncome;
+	}
+
+	public void setTotalIncome(double totalIncome) {
+		this.totalIncome = totalIncome;
 	}
 
 	public ObjectId getId() {
