@@ -1,6 +1,7 @@
 package ajbc.dataBase.project.models;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
@@ -95,7 +96,25 @@ public class Order {
 				+ ", startDate=" + startDate + ", nights=" + nights + ", totalPrice=" + totalPrice + "]";
 	}
 
-	
-	
+	@Override
+	public int hashCode() {
+		return Objects.hash(customerId, hotelId, id, nights, orderDate, startDate, totalPrice);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Order other = (Order) obj;
+		return Objects.equals(customerId, other.customerId) && Objects.equals(hotelId, other.hotelId)
+				&& Objects.equals(id, other.id) && nights == other.nights && Objects.equals(orderDate, other.orderDate)
+				&& Objects.equals(startDate, other.startDate)
+				&& Double.doubleToLongBits(totalPrice) == Double.doubleToLongBits(other.totalPrice);
+	}
+
 	
 }

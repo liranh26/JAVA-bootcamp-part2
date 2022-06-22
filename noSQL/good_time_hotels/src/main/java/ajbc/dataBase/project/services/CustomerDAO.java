@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.mongodb.MongoClientSettings;
@@ -44,8 +45,14 @@ public class CustomerDAO {
 		return collection.findOneAndReplace(Filters.eq("_id", order.getCustomerId()), tmp);
 	}
 	
-	public void deleteOrder(MongoCollection<Customer> collection, Order order) {
-		collection.deleteOne(Filters.eq("orders._id", order.getId()));
+	public Customer deleteOrder(MongoCollection<Customer> collection, Order order) {
+		Bson filter = Filters.eq("orders._id", order.getId());
+		Customer customer = collection.find(filter).first();
+		
+		customer.getOrders().remove(order);
+	
+		Bson insertFilter = Filters.eq("_id", customer.getId());
+		return collection.findOneAndReplace(insertFilter, customer);
 	}
 	
 }
