@@ -107,8 +107,8 @@ public class Utils {
 		String msg = ordersColl.insertMany(orders).wasAcknowledged() ? "Succeeded" : "Failed";
 		
 		for (Order order : orders) {
+			customerDAO.insertOrder(customerColl, order);
 		 	hotelsDAO.insertOrder(hotelColl, order);
-		 	customerDAO.insertOrder(customerColl, order);
 		}
 		
 		return msg + " inserting chair list to DB!";

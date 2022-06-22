@@ -19,7 +19,6 @@ public class Hotel {
 	@BsonProperty(value = "night_price")
 	private float pricePerNight;
 	private List<ObjectId> orders;
-	private Map<LocalDate, List<Room>> dateTracker;
 	
 	public Hotel() {}
 	
@@ -32,7 +31,6 @@ public class Hotel {
 		this.rooms = rooms;
 		this.pricePerNight = pricePerNight;
 		this.orders = orders;
-		dateTracker = new HashMap<LocalDate, List<Room>>();
 	}
 
 	public ObjectId getId() {
@@ -93,45 +91,8 @@ public class Hotel {
 	
 	public void addOrderId(Order order) {
 		orders.add(order.getId());
-		while(order.getNights() > 0) {
-			if(dateTracker.get(order.getStartDate()) == null) {
-				List<Room> addRoom = new ArrayList<Room>();
-				addRoom.add(rooms.get(0));
-				rooms.get(0).setOccupied(true);
-				dateTracker.put(order.getStartDate(), addRoom);
-			}else {
-				for (int i = 0; i < rooms.size(); i++) {
-					if(!rooms.get(i).isOccupied()) {
-						dateTracker.get(order.getStartDate()).add(rooms.get(i));
-						rooms.get(i).setOccupied(true);
-					}					
-				}
-			}
-			order.setNights(order.getNights()-1);
-		}
-	}
 
-	public Map<LocalDate, List<Room>> getDateTracker() {
-		return dateTracker;
 	}
-
-	public boolean checkAvailbleRoom(LocalDate date, int days) {
-		boolean flag = true;
-		if(dateTracker.get(date) == null)
-			return flag;
-		
-		while(flag & days > 0) {
-			flag = dateTracker.get(date).size() < rooms.size() ;
-			date = date.plusDays(1);
-			days--;
-		}
-		
-		return flag;
-	}
-	
-//	public void setDateTracker(Map<LocalDate, List<Room>> dateTracker) {
-//		this.dateTracker = dateTracker;
-//	}
 
 	@Override
 	public String toString() {

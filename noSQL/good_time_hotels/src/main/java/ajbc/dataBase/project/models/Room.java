@@ -1,5 +1,10 @@
 package ajbc.dataBase.project.models;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
@@ -9,8 +14,8 @@ public class Room {
 	private int number;
 	@BsonProperty(value = "has_tub")
 	private boolean hasTub;
-	@BsonProperty(value = "is_occupied")
-	private boolean isOccupied;
+	@BsonProperty(value = "dates_reserved")
+	private List<LocalDate> datesReserved = new ArrayList<LocalDate>();;
 	
 	public Room() {}
 	
@@ -18,15 +23,16 @@ public class Room {
 		this.id = id;
 		this.number = number;
 		this.hasTub = hasTub;
-		isOccupied = false;
+//		datesReserved = new ArrayList<LocalDate>();
+	}
+	
+	public List<LocalDate> getDatesReserved() {
+		return datesReserved;
 	}
 
-	public boolean isOccupied() {
-		return isOccupied;
-	}
-
-	public void setOccupied(boolean isOccupied) {
-		this.isOccupied = isOccupied;
+	public void addDate(LocalDate date) {
+		datesReserved.add(date);
+		Collections.sort(datesReserved);
 	}
 
 	public ObjectId getId() {
