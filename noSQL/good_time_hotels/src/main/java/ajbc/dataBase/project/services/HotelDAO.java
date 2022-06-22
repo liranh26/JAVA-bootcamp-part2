@@ -78,6 +78,8 @@ public class HotelDAO {
 		boolean empty;
 
 		for (Room room : hotel.getRooms()) {
+			if(room == null)
+				continue;
 			empty = true;
 			for (int i = 0; i < order.getNights(); i++) {
 				if (room.getDatesReserved().contains(order.getStartDate().plusDays(i))) {
@@ -93,7 +95,7 @@ public class HotelDAO {
 		return null;
 	}
 
-	// TODO fix double dates
+
 	public boolean hasAvailbeRoomAtDate(MongoCollection<Hotel> collection, ObjectId hotelId, LocalDate date) {
 
 		Hotel hotel = getHotelById(collection, hotelId);
@@ -102,7 +104,6 @@ public class HotelDAO {
 
 		for (Room room : hotel.getRooms()) {
 			if (room.getDatesReserved().contains(date)) {
-				System.out.println("Occupied!");
 				numRooms++;
 			}
 		}
@@ -143,7 +144,5 @@ public class HotelDAO {
 		List<Document> res = collection.aggregate(Arrays.asList(sort, projectFields)).into(new ArrayList<>());
 		res.forEach(d -> System.out.println(d.toJson(JsonWriterSettings.builder().indent(true).build())));
 	}
-	
-	
 	
 }

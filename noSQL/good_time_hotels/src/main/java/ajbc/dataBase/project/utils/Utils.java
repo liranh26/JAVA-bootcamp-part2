@@ -25,6 +25,7 @@ import ajbc.dataBase.project.models.Order;
 import ajbc.dataBase.project.models.Room;
 import ajbc.dataBase.project.services.CustomerDAO;
 import ajbc.dataBase.project.services.HotelDAO;
+import ajbc.dataBase.project.services.OrdersDAO;
 
 import java.util.Random;
 
@@ -68,50 +69,48 @@ public class Utils {
 
 		return msg + " inserting chair list to DB!";
 	}
-	
-	
-	public static String seedOrders(MongoClient mongoClient) {
+
+	public static void seedOrders(MongoClient mongoClient) {
 		HotelDAO hotelsDAO = new HotelDAO();
 		CustomerDAO customerDAO = new CustomerDAO();
 
 		MongoDatabase myDB = mongoClient.getDatabase("good_times_hotels");
-		
+
 		MongoCollection<Order> ordersColl = myDB.getCollection("orders", Order.class);
 		MongoCollection<Hotel> hotelColl = myDB.getCollection("hotels", Hotel.class);
 		MongoCollection<Customer> customerColl = myDB.getCollection("customers", Customer.class);
 
 		Hotel hermoso = hotelsDAO.getHotelByName(hotelColl, "Hermoso");
-		Hotel lindo = hotelsDAO.getHotelByName(hotelColl,"Lindo");
+		Hotel lindo = hotelsDAO.getHotelByName(hotelColl, "Lindo");
 		Hotel bello = hotelsDAO.getHotelByName(hotelColl, "Bello");
-		
+
 		Customer liran = customerDAO.getCustomerByName(customerColl, "Liran");
 		Customer guy = customerDAO.getCustomerByName(customerColl, "Guy");
 		Customer sapir = customerDAO.getCustomerByName(customerColl, "Sapir");
 		Customer amir = customerDAO.getCustomerByName(customerColl, "Amir");
-		
-		List<Order> orders = Arrays
-				.asList(new Order(new ObjectId(), hermoso.getId(), liran.getId(),
-						LocalDate.of(2022, 1, 1), LocalDate.of(2022, 10, 10), 5, hermoso.getPricePerNight() * 5),
-						
-						new Order(new ObjectId(), bello.getId(), guy.getId(),
-								LocalDate.of(2022, 5, 6), LocalDate.of(2022, 12, 12), 5, bello.getPricePerNight() * 5),
-						
-						new Order(new ObjectId(), lindo.getId(), sapir.getId(),
-								LocalDate.of(2022, 5, 6), LocalDate.of(2022, 12, 12), 5, lindo.getPricePerNight() * 5),
-						
-						new Order(new ObjectId(), bello.getId(), amir.getId(),
-								LocalDate.of(2021, 11, 12), LocalDate.of(2022, 8, 9), 4, bello.getPricePerNight() * 4)	
-				);
-		
-		ordersColl.drop(); 
-		String msg = ordersColl.insertMany(orders).wasAcknowledged() ? "Succeeded" : "Failed";
-		
-		for (Order order : orders) {
-			customerDAO.insertOrder(customerColl, order);
-		 	hotelsDAO.insertOrder(hotelColl, order);
-		}
-		
-		return msg + " inserting chair list to DB!";
+
+		List<Order> orders = Arrays.asList(
+				new Order(new ObjectId(), hermoso.getId(), liran.getId(), LocalDate.of(2022, 1, 1),
+						LocalDate.of(2022, 10, 10), 5, hermoso.getPricePerNight() * 5),
+
+				new Order(new ObjectId(), bello.getId(), guy.getId(), LocalDate.of(2022, 5, 6),
+						LocalDate.of(2022, 12, 12), 5, bello.getPricePerNight() * 5),
+
+				new Order(new ObjectId(), bello.getId(), liran.getId(), LocalDate.of(2021, 11, 12),
+						LocalDate.of(2022, 8, 9), 4, bello.getPricePerNight() * 4),
+
+				new Order(new ObjectId(), bello.getId(), amir.getId(), LocalDate.of(2021, 11, 12),
+						LocalDate.of(2022, 8, 9), 4, bello.getPricePerNight() * 4),
+
+				new Order(new ObjectId(), lindo.getId(), sapir.getId(), LocalDate.of(2022, 5, 6),
+						LocalDate.of(2022, 12, 12), 5, lindo.getPricePerNight() * 5));
+
+		ordersColl.drop();
+
+		OrdersDAO ordersDAO = new OrdersDAO();
+
+		for (Order order : orders)
+			ordersDAO.addOrder(ordersColl, hotelColl, customerColl, order);
 
 	}
 

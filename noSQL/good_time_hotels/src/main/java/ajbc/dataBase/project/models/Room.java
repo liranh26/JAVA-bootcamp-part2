@@ -15,13 +15,9 @@ public class Room {
 	@BsonProperty(value = "has_tub")
 	private boolean hasTub;
 	@BsonProperty(value = "dates_reserved")
-<<<<<<< HEAD
 	private List<LocalDate> datesReserved;
 	@BsonProperty(value = "room_orders")
 	private List<ObjectId> roomOrders;
-=======
-	private List<LocalDate> datesReserved = new ArrayList<LocalDate>();;
->>>>>>> parent of 71e405b (backup)
 	
 	public Room() {}
 	
@@ -29,7 +25,6 @@ public class Room {
 		this.id = id;
 		this.number = number;
 		this.hasTub = hasTub;
-<<<<<<< HEAD
 		datesReserved = new ArrayList<LocalDate>();
 		roomOrders = new ArrayList<ObjectId>(); 
 	}
@@ -46,13 +41,12 @@ public class Room {
 		this.roomOrders = roomOrders;
 	}
 
-=======
-//		datesReserved = new ArrayList<LocalDate>();
-	}
-	
->>>>>>> parent of 71e405b (backup)
 	public List<LocalDate> getDatesReserved() {
 		return datesReserved;
+	}
+	
+	public void setDatesReserved(List<LocalDate> datesReserved) {
+		this.datesReserved = datesReserved;
 	}
 
 	public void addDate(LocalDate date) {
@@ -83,23 +77,13 @@ public class Room {
 	public void setHasTub(boolean hasTub) {
 		this.hasTub = hasTub;
 	}
-	
-	
 
 	@Override
 	public String toString() {
-<<<<<<< HEAD
 		return "Room [id=" + id + ", number=" + number + ", hasTub=" + hasTub + ", datesReserved=" + datesReserved
 				+ ", roomOrders=" + roomOrders + "]";
 	}
-
-
-
-=======
-		return "Room [id=" + id + ", number=" + number + ", hasTub=" + hasTub + "]";
-	}
 	
-	
->>>>>>> parent of 71e405b (backup)
+
 	
 }

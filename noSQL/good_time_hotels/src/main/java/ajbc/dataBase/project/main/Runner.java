@@ -23,7 +23,7 @@ import ajbc.dataBase.project.models.Hotel;
 import ajbc.dataBase.project.models.Order;
 import ajbc.dataBase.project.services.CustomerDAO;
 import ajbc.dataBase.project.services.HotelDAO;
-import ajbc.dataBase.project.services.ordersDAO;
+import ajbc.dataBase.project.services.OrdersDAO;
 import ajbc.dataBase.project.utils.MyConnString;
 
 
@@ -38,7 +38,7 @@ public class Runner {
 				.serverApi(ServerApi.builder().version(ServerApiVersion.V1).build()).codecRegistry(codecRegistry)
 				.build();
 
-		ordersDAO orderDAO = new ordersDAO();
+		OrdersDAO orderDAO = new OrdersDAO();
 		CustomerDAO customerDAO = new CustomerDAO();
 		HotelDAO hotelDAO = new HotelDAO();
 		
@@ -77,54 +77,15 @@ public class Runner {
 			
 			/**** Q6 - sort by income ****/
 			MongoCollection<Document> doc = myDB.getCollection("hotels");
-//			hotelDAO.sortHotelByIncome(doc);
+			hotelDAO.sortHotelByIncome(doc);
 			
 			
 			/**** Q7 - sort by income ****/
 			orderDAO.totalIncomeFromOrders(doc);
 			
-			
-			
-			
-			
-			
-			
-//			MongoCollection<Document> collection = myDB.getCollection("hotels");
-//		
-//			Hotel hotel = hotelDAO.getHotelByName(hotelColl, "Bello");
-//			
-//			for (Room room : hotel.getRooms()) {
-//				Bson match = match(eq("room_id", room.getId()));
-//				Bson unwind = unwind("$room_orders");
-//				AggregateIterable<Document> doc = collection.aggregate(Arrays.asList(match, unwind));
-//				doc.forEach( d -> System.out.println((Date)d.get("dates_reserved")));
-//			}
-			
-			
-			
 
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-
-			
-			
-			/**** Q5 - cancel an order ****/
-//			orderDAO.deleteOrder(ordersColl, hotelColl, customerColl, orderDAO.getOrderById(ordersColl, new ObjectId("62b2faf4b5d8b319ad4f1e52")));
-//			hotelDAO.deleteOrder(hotelColl, orderDAO.getOrderById(ordersColl, new ObjectId("62b30ebd9b3dea42b1cf6d72")));
+		
 		}
 
 	}
