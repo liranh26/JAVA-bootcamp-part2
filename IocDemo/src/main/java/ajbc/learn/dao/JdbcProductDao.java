@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,21 +17,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class JdbcProductDao implements ProductDao {
 
-	private String serverAddress;
-	private String port;
-	private String databaseName;
-	private String serverName;
-	private String userName;
-	private String password;
-
+	@Autowired
+	private Connection connection;
+	
 	// add a connection to db
 	@Override
 	public long count() {
 
-		String sql = "select count(*) from customers";
+		String sql = "select count(*) from PRODUCTS";
 
-		try (Connection connection = connection(); 
-				PreparedStatement statement = connection.prepareStatement(sql);
+		try (PreparedStatement statement = connection.prepareStatement(sql);
 				ResultSet resultSet = statement.executeQuery();) {
 			
 			if(resultSet.next()) {
@@ -42,16 +39,6 @@ public class JdbcProductDao implements ProductDao {
 		}
 
 		return 0;
-	}
-
-	private Connection connection() throws SQLException {
-
-		return DriverManager.getConnection(url(), userName, password);
-	}
-
-	private String url() {
-		return "jdbc:sqlserver://" + serverAddress + ":" + port + ";databaseName=" + databaseName + ";servername="
-				+ serverName + ";" + ";encrypt=false";
 	}
 
 }
