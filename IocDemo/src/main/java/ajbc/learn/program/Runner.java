@@ -24,7 +24,7 @@ public class Runner {
 		dao = ctx.getBean("jdbcDao", ProductDao.class);
 		
 		System.out.println("------------------------------");
-		dao.addProduct(new Product("Crazy Tea", 1, 2, "bla bla", 1.5, 10, 2, 5, 0));
+//		dao.addProduct(new Product("Crazy Tea", 1, 2, "bla bla", 1.5, 10, 2, 5, 0));
 		System.out.println("------------------------------");
 
 		

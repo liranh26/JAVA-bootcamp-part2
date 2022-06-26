@@ -1,6 +1,6 @@
 package ajbc.learn.models;
-
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,25 +17,29 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
+
+@Entity
 @Table(name = "products")
 public class Product {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer productId;
 	private String productName;
 	
-	@Column(insertable = false, updatable = false) //foriegn keys 
+	@Column(insertable = false, updatable = false)
 	private Integer supplierId;
-
+	
+	
 	@ManyToOne
-	@JoinColumn(name = "supplierId")
+	@JoinColumn(name="supplierId")
 	private Supplier supplier;
+	
 	
 	@Column(insertable = false, updatable = false)
 	private Integer categoryId;
 	
 	@ManyToOne
-	@JoinColumn(name = "categoryId")
+	@JoinColumn(name="categoryId")
 	private Category category;
 	
 	private String quantityPerUnit;

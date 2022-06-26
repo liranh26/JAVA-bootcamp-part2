@@ -15,9 +15,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
-import ajbc.learn.dao.JdbcProductDao;
 import ajbc.learn.models.Category;
+import ajbc.learn.models.Product;
+import ajbc.learn.models.Supplier;
 
 
 @ComponentScan(basePackages = {"ajbc.learn.dao"})
@@ -73,26 +76,57 @@ public class AppConfing {
 	}
 	
 	
+//	@Bean
+//	public SessionFactory sessionFactory() {
+//		
+//		//setting the connection to the db
+//		Properties props = new Properties();
+//		props.setProperty("hibernate.connection.driver_class",driverClassName);
+//		props.setProperty("hibernate.connection.url", url());
+//		props.setProperty("hibernate.connection.user", userName);
+//		props.setProperty("hibernate.connection.password", password);
+//		props.setProperty("hibernate.dialect", dialect);
+//		
+//		//config class for hibernate (this name because there is already a configuration from spring)
+//		org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration();
+//		configuration.setProperties(props); 
+//		
+//		//all classes which i will want to work as objects from the db add here
+//		configuration.addAnnotatedClass(Category.class);
+//		
+//		return configuration.buildSessionFactory();
+//	}
+	
+	
 	@Bean
-	public SessionFactory sessionFactory() {
+	public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
 		
-		//setting the connection to the db
+		LocalSessionFactoryBean factory = new LocalSessionFactoryBean();
+		
+		factory.setDataSource(dataSource);
+		// add mapped classes
+		factory.setAnnotatedClasses(Category.class, Supplier.class, Product.class);
+		
+		//add properties to session
 		Properties props = new Properties();
-		props.setProperty("hibernate.connection.driver_class",driverClassName);
-		props.setProperty("hibernate.connection.url", url());
-		props.setProperty("hibernate.connection.user", userName);
-		props.setProperty("hibernate.connection.password", password);
 		props.setProperty("hibernate.dialect", dialect);
+		props.setProperty("hibernate.show_sql", "false");
+		props.setProperty("hibernate.format_sql", "true");
 		
-		//config class for hibernate (this name because there is already a configuration from spring)
-		org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration();
-		configuration.setProperties(props); 
+		factory.setHibernateProperties(props);
 		
-		//all classes which i will want to work as objects from the db add here
-		configuration.addAnnotatedClass(Category.class);
-		
-		return configuration.buildSessionFactory();
+		return factory;
 	}
+	
+	
+	
+	@Bean
+	public HibernateTemplate hibernateTemplate(SessionFactory sessionFactory) {
+		return new HibernateTemplate(sessionFactory);
+	}
+	
+	
+	
 	
 	
 	private String url() {

@@ -15,13 +15,14 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
+
 @Entity
 @Table(name="suppliers")
 public class Supplier {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)  //connecting hibernate to know id is identity
-	private int supllierId;
+	private Integer supplierId;
 	private String companyName;
 	private String contactName;
 	private String contactTitle;
