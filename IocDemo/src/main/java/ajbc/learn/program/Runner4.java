@@ -39,30 +39,34 @@ public class Runner4 {
 
 //			!!!---> This works but it is not solid - beacuase its calling the HibernateTemplateProductDao class and not interface
 //			HibernateTemplateProductDao dao = ctx.getBean(HibernateTemplateProductDao.class);
-			
+
 //solid -> makes HibernateTemplateProductDao a @Component , then check its in the scan in config @ComponentScan(basePackages = {"ajbc.learn.dao"})
 			ProductDao dao = ctx.getBean("htDao", ProductDao.class);
-			
+
+			System.out.println("Dao is instace of: " + dao.getClass().getName());
+
+			System.out.println("count is " + dao.count());
+
 			List<Product> products = dao.getAllProducts();
-			System.out.println(products.size());
-			
-			Double min = 50.0, max=200.0 ;
+
+			Double min = 50.0, max = 200.0;
 			products = dao.getProductsByPriceRange(min, max);
-//			products.forEach(System.out::println);
-			
+			System.out.println(products.size());
+
 			products = dao.getProductsByPriceRange(max, min);
-			products.forEach(System.out::println);
-			
+			System.out.println(products.size());
+
 			Product prod = dao.getProduct(1);
 			System.out.println(prod);
+
+			prod.setUnitPrice(prod.getUnitPrice() + 1);
 			
-			prod.setUnitPrice(prod.getUnitPrice()+1);
-//			try {
-//			dao.updateProduct(prod);
-//			}catch(DaoException e) {
-//				System.out.println(e);
-//			}
-			
+			try {
+				dao.updateProduct(prod);
+			} catch (DaoException e) {
+				System.out.println(e);
+			}
+
 		}
 	}
 
