@@ -18,7 +18,7 @@ import ajbc.learn.dao.DaoException;
 public class MyAspect {
 
 	public MyAspect() {
-//		System.out.println("Aspect calling to main");
+		System.out.println("Aspect calling to main");
 	}
 	
 	//this is an advice method 
